@@ -1,7 +1,7 @@
 set nocompatible
 filetype off
 
-set rtp+=~/dotfiles/vimfiles/vundle.git/
+set runtimepath+=~/.vim/vundle.git/
 call vundle#rc()
 
 "taglist (requires ctag or exeburant ctag)
