@@ -25,7 +25,7 @@ zstyle ':completion:*:default' menu select=1
 
 setopt prompt_subst
 setopt list_types
-#setopt auto_param_slash
+setopt auto_param_slash
 setopt mark_dirs
 setopt list_packed
 setopt auto_param_keys
