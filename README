@@ -1,3 +1,20 @@
+--------
+Contents
+--------
 * .vimrc
 * .zshrc
 * .pythonstartup
+
+--------
+Steps
+--------
+1. git clone dotfiles
+2. cd $HOME
+3. ln -s .vimrc dotfiles/.vimrc
+4. ln -s .zshrc dotfiles/.zshrc
+5. ln -s .pythonstartup dotfiles/.pythonstartup
+
+--------
+To Do
+--------
+1. make pythonstartup support multiplatform, ie. Linux and OS X

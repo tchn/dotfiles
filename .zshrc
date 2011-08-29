@@ -21,6 +21,9 @@ compinit
 
 bindkey -e
 
+# Prompt
+PROMPT="%# "
+
 # Completion
 setopt auto_list
 
