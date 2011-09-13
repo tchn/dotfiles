@@ -2,6 +2,7 @@
 Contents
 --------
 * .vimrc
+* .gvimrc
 * .zshrc
 * .pythonstartup
 
@@ -11,8 +12,9 @@ Steps
 1. git clone dotfiles
 2. cd $HOME
 3. ln -s .vimrc dotfiles/.vimrc
-4. ln -s .zshrc dotfiles/.zshrc
-5. ln -s .pythonstartup dotfiles/.pythonstartup
+4. ln -s .gvimrc dotfiles/.gvimrc
+5. ln -s .zshrc dotfiles/.zshrc
+6. ln -s .pythonstartup dotfiles/.pythonstartup
 
 --------
 To Do
