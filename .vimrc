@@ -13,6 +13,12 @@ Bundle 'minibufexpl.vim'
 "Ctrl+scroll zoom for gvim
 Bundle 'fontzoom.vim'
 
+"matchit
+Bundle 'matchit.zip'
+
+"ack.vim
+Bundle 'ack.vim'
+
 filetype plugin indent on
 
 set encoding=utf8
@@ -23,7 +29,7 @@ set softtabstop=4
 set shiftwidth=4
 set autoindent
 set backspace=indent,eol,start
-set incsearch
+"set incsearch
 set ignorecase
 set hlsearch
 set ruler
@@ -43,5 +49,8 @@ let g:miniBufExplModSelTarget = 1
 ""
 "" for taglist.vim
 "" below is for osx/macports
-let Tlist_Ctags_Cmd='/opt/local/bin/ctags'
+"let Tlist_Ctags_Cmd='/opt/local/bin/ctags'
 let Tlist_inc_Winwidth=0
+
+" With Debian, ack is provided with a package named 'ack-grep', and ack.vim cannnot find ack executable. Try `ln -s /usr/bin/ack-grep /usr/local/bin/ack`
+let g:AckCmd='ack-grep'
