@@ -78,6 +78,8 @@ case $TERM in
 esac
 
 # extra env
+source ~/.common_funcs
+
 islinux && export PYTHONSTARTUP=~/.pythonstartup; source ~/.common_funcs_linux
 
 if [ isdarwin ]; then
@@ -85,4 +87,4 @@ if [ isdarwin ]; then
     export MANPATH=/opt/local/man:$MANPATH
 fi
 
-isdarwin && export PYTHONSTARTUP=/.pythonstartup
+isdarwin && export PYTHONSTARTUP=/.pythonstartup; source ~/.common_funcs_darwin
