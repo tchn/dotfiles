@@ -78,7 +78,7 @@ case $TERM in
 esac
 
 # extra env
-islinux && export PYTHONSTARTUP=~/.pythonstartup
+islinux && export PYTHONSTARTUP=~/.pythonstartup; source ~/.common_funcs_linux
 
 if [ isdarwin ]; then
     export PATH=/opt/local/bin:/opt/local/sbin:$PATH
