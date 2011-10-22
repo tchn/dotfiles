@@ -80,11 +80,15 @@ esac
 # extra env
 source ~/.common_funcs
 
-islinux && export PYTHONSTARTUP=~/.pythonstartup; source ~/.common_funcs_linux
+if [ islinux ]; then
+    export PYTHONSTARTUP=~/.pythonstartup
+    source ~/.common_funcs_linux
+fi
 
 if [ isdarwin ]; then
     export PATH=/opt/local/bin:/opt/local/sbin:$PATH
     export MANPATH=/opt/local/man:$MANPATH
+    export PYTHONSTARTUP=/.pythonstartup
+    source ~/.common_funcs_darwin
 fi
 
-isdarwin && export PYTHONSTARTUP=/.pythonstartup; source ~/.common_funcs_darwin

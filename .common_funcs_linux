@@ -1,9 +1,11 @@
-mount_truecrypt(){
+truecrypt_mount() {
+    set_default
     sudo cryptsetup -v remove /dev/mapper/truecrypt*
     truecrypt --mount --filesystem=hfsplus
 }
 
-umount_truecrypt(){
+truecrypt_umount() {
+    set_default
     sudo umount /media/truecrypt*
     sudo umount /tmp/.truecrypt_aux_mnt*
 }

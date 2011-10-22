@@ -1,0 +1,19 @@
+set_default() {
+    #set -o errexit
+    set -o nounset
+    #set -o pipefail
+}
+
+synergys_start() {
+    set_default
+    conf="$1"
+    synergys -f --config "${HOME}/.synergy.conf"
+}
+
+synergyc_connect() {
+    set_default
+    srv="$1"
+    ssh -p "${2:-22}" -f -N -L 24800:"$1":24800 "$1"
+    synergyc -f localhost
+}
+
