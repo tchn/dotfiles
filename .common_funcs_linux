@@ -9,3 +9,8 @@ truecrypt_umount() {
     sudo umount /media/truecrypt*
     sudo umount /tmp/.truecrypt_aux_mnt*
 }
+
+drop_caches() {
+    set_default
+    echo 3 1>/dev/null | sudo tee /proc/sys/vm/drop_caches
+}
