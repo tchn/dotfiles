@@ -19,6 +19,18 @@ Bundle 'matchit.zip'
 "ack.vim
 Bundle 'ack.vim'
 
+"L9
+Bundle 'L9'
+
+"FuzzyFinder, which depends on L9
+Bundle 'FuzzyFinder'
+
+"neocomplecache
+Bundle 'neocomplcache'
+
+"snipMate
+Bundle 'snipMate'
+
 filetype plugin indent on
 
 set encoding=utf8

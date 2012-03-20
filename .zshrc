@@ -55,6 +55,9 @@ setopt hist_ignore_all_dups
 setopt histignorespace
 setopt histallowclobber
 
+# autojump if available
+which autojump > /dev/null 2>&1 && source /usr/share/autojump/autojump.sh
+
 # Expansion and Globbing
 setopt extended_glob
 

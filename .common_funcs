@@ -4,6 +4,16 @@ set_default() {
     # set -o pipefail
 }
 
+if_exists() {
+    local fname="$1"
+    set_default
+    if [ -e "$fname" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 synergys_start() {
     set_default
     # conf="$1"
