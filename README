@@ -5,6 +5,9 @@ Contents
 * .gvimrc
 * .zshrc
 * .pythonstartup
+* .common_funcs
+* .common_funcs_linux
+* .common_funcs_darwin
 
 --------
 Steps
@@ -15,6 +18,12 @@ Steps
 4. ln -s .gvimrc dotfiles/.gvimrc
 5. ln -s .zshrc dotfiles/.zshrc
 6. ln -s .pythonstartup dotfiles/.pythonstartup
+7. ln -s .common_funcs dotfiles/.common_funcs_linux
+8. cd dotfiles
+8. git submodule init
+9. git submodule update
+10. cd $HOME
+11. ln -s .vim dorfiles/.vim/
 
 --------
 To Do
