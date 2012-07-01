@@ -22,8 +22,17 @@ synergys_start() {
 
 synergyc_connect() {
     set_default
-    srv="$1"
+    local srv="$1"
     ssh -p "${2:-22}" -f -N -L 24800:"$1":24800 "$1"
     synergyc -f localhost
 }
 
+hex() {
+    set_default
+    if_exists $(which hexdump) && hexdump -v -e '/1 "%02x"' $1
+}
+
+h2b() {
+    set_default
+    if_exists $(which xxd) && xxd -r -p $1
+}
