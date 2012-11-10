@@ -103,6 +103,5 @@ if isdarwin; then
     export MANPATH=/opt/local/man:$MANPATH
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_darwin
-    alias rm='rm -i'
 fi
 
