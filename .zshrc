@@ -56,7 +56,7 @@ setopt histignorespace
 setopt histallowclobber
 
 # autojump if available
-which autojump > /dev/null 2>&1 && source /usr/share/autojump/autojump.sh
+which autojump > /dev/null 2>&1 && source /usr/share/autojump/autojump.sh && export AUTOJUMP_KEEP_SYMLINKS=1
 
 # Expansion and Globbing
 setopt extended_glob
@@ -72,6 +72,7 @@ islinux && alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='grep --color=auto'
+alias rm='rm -I'
 
 # change window title
 case $TERM in
