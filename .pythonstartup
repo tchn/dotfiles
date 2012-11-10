@@ -6,8 +6,9 @@ import atexit
 import os
 
 # tab completion
-#readline.parse_and_bind('tab: complete')
-readline.parse_and_bind("bind ^I rl_complete")
+readline.parse_and_bind('tab: complete')
+if os.sys.platform == 'darwin':
+    readline.parse_and_bind("bind ^I rl_complete")
 
 # history file
 histfile = os.path.join(os.environ['HOME'], '.pythonhistory')
