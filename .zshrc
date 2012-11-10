@@ -69,7 +69,6 @@ islinux && alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='grep --color=auto'
-alias rm='rm -I'
 
 # change window title
 case $TERM in
@@ -96,6 +95,7 @@ source ~/.common_funcs
 if islinux; then
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_linux
+    alias rm='rm -I'
 fi
 
 if isdarwin; then
@@ -103,5 +103,6 @@ if isdarwin; then
     export MANPATH=/opt/local/man:$MANPATH
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_darwin
+    alias rm='rm -i'
 fi
 
