@@ -14,6 +14,32 @@ if_exists() {
     fi
 }
 
+mksynergyconf() {
+    local leftscr=$1
+    local rightscr=$2
+
+    cat > ~/.synergy.conf << EOF
+section: screens
+    $leftscr:
+    $rightscr:
+end
+
+section: links
+    $leftscr:
+       right = $rightscr
+    $rightscr:
+       left = $leftscr
+end
+
+section: options
+    keystroke(alt+shift+left) = switchToScreen($leftscr)
+    keystroke(alt+shift+right) = switchToScreen($rightscr)
+    screenSaverSync = true
+end
+
+EOF
+}
+
 synergys_start() {
     set_default
     # conf="$1"
