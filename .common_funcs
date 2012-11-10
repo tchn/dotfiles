@@ -15,6 +15,7 @@ if_exists() {
 }
 
 mksynergyconf() {
+    set_default
     local leftscr=$1
     local rightscr=$2
 
@@ -61,4 +62,9 @@ hex() {
 h2b() {
     set_default
     if_exists $(which xxd) && xxd -r -p $1
+}
+
+today() {
+    set_default
+    cal | grep -A7 -B7 --color=auto $(date +%d)
 }
