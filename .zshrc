@@ -55,9 +55,6 @@ setopt hist_ignore_all_dups
 setopt histignorespace
 setopt histallowclobber
 
-# autojump if available
-which autojump > /dev/null 2>&1 && source /usr/share/autojump/autojump.sh && export AUTOJUMP_KEEP_SYMLINKS=1
-
 # Expansion and Globbing
 setopt extended_glob
 
@@ -81,6 +78,18 @@ case $TERM in
         ;;
 esac
 
+# autojump if available
+if islinux; then
+    which autojump > /dev/null 2>&1 && source /usr/share/autojump/autojump.sh && export AUTOJUMP_KEEP_SYMLINKS=1
+fi
+
+if isdarwin; then
+    export FPATH="$FPATH:/opt/local/share/zsh/site-functions/"
+    if [ -f /opt/local/etc/profile.d/autojump.sh ]; then
+        source /opt/local/etc/profile.d/autojump.sh && AUTOJUMP_KEEP_SYMLINKS=1
+    fi
+fi
+
 # extra env
 source ~/.common_funcs
 
@@ -92,7 +101,7 @@ fi
 if isdarwin; then
     export PATH=/opt/local/bin:/opt/local/sbin:$PATH
     export MANPATH=/opt/local/man:$MANPATH
-    export PYTHONSTARTUP=/.pythonstartup
+    export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_darwin
 fi
 
