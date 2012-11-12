@@ -33,8 +33,8 @@ section: links
 end
 
 section: options
-    keystroke(alt+shift+\u004c) = switchToScreen($leftscr)
-    keystroke(alt+shift+\u0052) = switchToScreen($rightscr)
+    keystroke(alt+shift+\u0031) = switchToScreen($leftscr)
+    keystroke(alt+shift+\u0032) = switchToScreen($rightscr)
     screenSaverSync = true
 end
 
