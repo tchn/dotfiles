@@ -19,6 +19,9 @@ Bundle 'matchit.zip'
 "ack.vim
 Bundle 'ack.vim'
 
+"surround.vim
+Bundle 'surround.vim'
+
 filetype plugin indent on
 
 set encoding=utf8
