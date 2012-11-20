@@ -22,6 +22,9 @@ Bundle 'ack.vim'
 "surround.vim
 Bundle 'surround.vim'
 
+"a.vim
+Bundle 'a.vim'
+
 filetype plugin indent on
 
 set encoding=utf8
