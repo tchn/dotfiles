@@ -14,6 +14,13 @@ if_exists() {
     fi
 }
 
+asroot() {
+    set_default
+    local retval=0
+    sudo -n echo -n '' 2>/dev/null || retval=1
+    return "$retval"
+}
+
 mksynergyconf() {
     set_default
     local leftscr=$1
@@ -64,7 +71,3 @@ h2b() {
     if_exists $(which xxd) && xxd -r -p $1
 }
 
-today() {
-    set_default
-    cal | grep -A7 -B7 --color=auto $(date +%d)
-}
