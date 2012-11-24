@@ -17,8 +17,8 @@ if_exists() {
 asroot() {
     set_default
     local retval=0
-    sudo -n echo -n '' 2>/dev/null || retval=1
-    return "$retval"
+    sudo -n echo -n '' >/dev/null 2>&1 || retval=1
+   return "$retval"
 }
 
 mksynergyconf() {
