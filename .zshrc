@@ -65,10 +65,6 @@ LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:c
 
 export ZLS_COLORS=$LS_COLORS
 zstyle ':completion:*:default' list-colors ${(s.:.)ZLS_COLORS}
-islinux && alias ls='ls --color=auto'
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-alias fgrep='grep --color=auto'
 
 # change window title
 case $TERM in
@@ -89,13 +85,20 @@ if isdarwin; then
     fi
 fi
 
-# extra env
+# extra env and alias
 source ~/.common_funcs
+
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='grep --color=auto'
+alias cp='cp -v'
+alias mv='mv -v'
 
 if islinux; then
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_linux
-    alias rm='rm -I'
+    alias rm='rm -I -v'
+    alias ls='ls --color=auto'
 fi
 
 if isdarwin; then
@@ -104,4 +107,3 @@ if isdarwin; then
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_darwin
 fi
-
