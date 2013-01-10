@@ -95,6 +95,7 @@ alias cp='cp -v'
 alias mv='mv -v'
 
 if islinux; then
+    export PATH=/opt/bin:/opt/sbin:$PATH
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_linux
     alias rm='rm -I -v'
