@@ -50,3 +50,8 @@ else
     chromium --user-data-dir="${profile_dir}${profile}";
 fi
 }
+
+mcd() {
+    set_default
+    mkdir -p "$1" && cd "$1"
+}
