@@ -211,7 +211,11 @@ Bundle 'The-NERD-tree'
 
 "neocomplcache
 Bundle 'neocomplcache'
-let g:neocomplcache_enable_at_startup=1
+"Setting example at https://github.com/Shougo/neocomplcache
+let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_camel_case_completion = 1
+let g:neocomplcache_enable_underbar_completion = 1
+let g:neocomplcache_enable_smart_case = 1
 
 "The-NERD-Commenter
 Bundle 'The-NERD-Commenter'
