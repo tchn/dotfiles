@@ -71,3 +71,7 @@ h2b() {
     if_exists $(which xxd) && xxd -r -p $1
 }
 
+dups() {
+    set_default
+    sort "$@" | uniq -d
+}
