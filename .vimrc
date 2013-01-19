@@ -1,43 +1,27 @@
 "------------------------------------------------------------
 "" Features {{{1
 "
-"" These options and commands enable some very useful features in Vim, that
-" no user should have to live without.
+"" These options and commands enable some very useful features in Vim, that no user should have to live without.
 "
-" " Set 'nocompatible' to ward off unexpected things that your distro might
-" " have made, as well as sanely reset options when re-sourcing .vimrc
+" " Set 'nocompatible' to ward off unexpected things that your distro might have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
 "
-" " Attempt to determine the type of a file based on its name and possibly its
-" " contents. Use this to allow intelligent auto-indenting for each filetype,
-" " and for plugins that are filetype specific.
+" " Attempt to determine the type of a file based on its name and possibly its contents. Use this to allow intelligent auto-indenting for each filetype, and for plugins that are filetype specific.
 filetype indent plugin on
 "
-" " Enable syntax highlighting
-syntax on
+" " Enable syntax highlighting: syntax on overrides custom colorscheme by vim default scheme
+syntax enable
+"syntax on
 
 "------------------------------------------------------------
 "" Must have options {{{1
 "
 "" These are highly recommended options.
 
-" Vim with default settings does not allow easy switching between multiple
-" files in the same editor window. Users can use multiple split windows or
-" multiple tab pages to edit multiple files, but it is still best to enable an option
-" to allow easier switching between files.
-" One such option is the 'hidden' option, which allows you to re-use the
-" same window and switch from an unsaved buffer without saving it first. Also
-" allows you to keep an undo history for multiple files when re-using the same
-" window  in this way. Note that using persistent undo also lets you undo in
-" multiple files even in the same window, but is less efficient and is actually
-" designed for keeping undo history after closing Vim entirely. Vim will complain if
-" you try to quit without saving, and swap files will keep you safe if your
-" computer crashes.
+" Vim with default settings does not allow easy switching between multiple files in the same editor window. Users can use multiple split windows or multiple tab pages to edit multiple files, but it is still best to enable an option to allow easier switching between files. One such option is the 'hidden' option, which allows you to re-use the same window and switch from an unsaved buffer without saving it first. Also allows you to keep an undo history for multiple files when re-using the same window  in this way. Note that using persistent undo also lets you undo in multiple files even in the same window, but is less efficient and is actually designed for keeping undo history after closing Vim entirely. Vim will complain if you try to quit without saving, and swap files will keep you safe if your computer crashes.
 set hidden
 "
-" Note that not everyone likes working this way (with the hidden option).
-" Alternatives include using tabs or split windows instead of re-using the
-" same window as mentioned above, and/or either of the following options:
+" Note that not everyone likes working this way (with the hidden option). Alternatives include using tabs or split windows instead of re-using the same window as mentioned above, and/or either of the following options:
 "set confirm
 "set autowriteall
 "
@@ -145,7 +129,7 @@ set textwidth=0
 set commentstring=\ #\ %s
 set foldlevel=0
 set clipboard+=unnamed
-set bg=dark
+set background=dark
 set statusline=2
 
 " Navigations using keys up/down/left/right
@@ -161,6 +145,11 @@ nnoremap <right> <nop>
 nnoremap j gj
 nnoremap k gk
 
+" color scheme
+colorscheme solarized
+"colorscheme default
+
+" for plugins managed via vundle
 set runtimepath+=~/.vim/vundle.git/
 call vundle#rc()
 
@@ -186,7 +175,8 @@ Bundle 'matchit.zip'
 "ack.vim
 Bundle 'ack.vim'
 " With Debian, ack is provided with a package named 'ack-grep', and ack.vim cannnot find ack executable. Try `ln -s /usr/bin/ack-grep /usr/local/bin/ack`
-let g:AckCmd='ack-grep'
+"let g:AckCmd='/usr/bin/ack-grep'
+"let g:ackprg = "ack-grep -H --nocolor --nogroup --column"
 
 "surround.vim
 Bundle 'surround.vim'
@@ -206,6 +196,9 @@ Bundle 'snipMate'
 "fugitive.vim
 Bundle 'fugitive.vim'
 
+"git.zip
+Bundle 'git.zip'
+
 "The-NERD-tree
 Bundle 'The-NERD-tree'
 
@@ -222,3 +215,17 @@ Bundle 'The-NERD-Commenter'
 
 "Tagbar
 Bundle 'Tagbar'
+
+" Gundo (needs vim compiled with Python support)
+"Bundle 'Gundo'
+
+" TaskList.vim
+Bundle 'TaskList.vim'
+
+" SuperTab
+Bundle 'SuperTab'
+"au Filetype python set omnifunc=pythoncomplete#Complete
+"let g:SuperTabDefaultCompletionType = "context"
+
+" Solarized
+Bundle 'Solarized'
