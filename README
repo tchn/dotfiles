@@ -8,16 +8,16 @@ Contents
 * .common_funcs
 * .common_funcs_linux
 * .common_funcs_darwin
+* .gdbinit (essentially from http://reverse.put.as/gdbinit/)
 
 --------
 Steps
 --------
 1. cd $HOME
 2. git clone dotfiles
-3. sh setup.sh
+3. bash setup.sh
 4. run BundleInstall in vim
 
 --------
 To Do
 --------
-1. make pythonstartup support multiplatform, ie. Linux and OS X
