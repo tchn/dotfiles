@@ -174,9 +174,9 @@ Bundle 'matchit.zip'
 
 "ack.vim
 Bundle 'ack.vim'
-" With Debian, ack is provided with a package named 'ack-grep', and ack.vim cannnot find ack executable. Try `ln -s /usr/bin/ack-grep /usr/local/bin/ack`
+" With Debian, ack is provided with a package named 'ack-grep', and ack.vim cannnot find ack executable. Try `ln -s /usr/bin/ack-grep /usr/local/bin/ack` because somehow the below does not work.
 "let g:AckCmd='/usr/bin/ack-grep'
-"let g:ackprg = "ack-grep -H --nocolor --nogroup --column"
+"let g:ackprg='ack-grep -H --nocolor --nogroup'
 
 "surround.vim
 Bundle 'surround.vim'
