@@ -16,6 +16,7 @@ ln -s dotfiles/.common_funcs_linux .common_funcs_linux
 ln -s dotfiles/.common_funcs_darwin .common_funcs_darwin
 ln -s dotfiles/.pythonstartup .pythonstartup
 ln -s dotfiles/.vim/ .vim
+ln -s dotfiles/.gdbinit .gdbinit
 
 vimdir="${basedir}/.vim/"
 colorsdir="${vimdir}/colors/"
