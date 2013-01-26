@@ -69,7 +69,8 @@ zstyle ':completion:*:default' list-colors ${(s.:.)ZLS_COLORS}
 # change window title
 case $TERM in
     *xterm*)
-        precmd () {print -Pn  "\e]0;%M: %~\a"}
+        precmd() {print -Pn  "\e]0;%M: %~\a"}
+        preexec() {print -Pn "\e]0;%M: $1\a"}
         ;;
 esac
 
@@ -94,9 +95,6 @@ alias fgrep='grep --color=auto'
 alias cp='cp -v'
 alias mv='mv -v'
 
-# set coredump file to be created
-ulimit -c unlimited
-
 if islinux; then
     export PATH=/opt/bin:/opt/sbin:$PATH
     export PYTHONSTARTUP=~/.pythonstartup
@@ -111,3 +109,9 @@ if isdarwin; then
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_darwin
 fi
+
+# Add RVM to PATH for scripting
+PATH=$PATH:$HOME/.rvm/bin
+
+# set coredump file to be created
+ulimit -c unlimited
