@@ -94,6 +94,9 @@ alias fgrep='grep --color=auto'
 alias cp='cp -v'
 alias mv='mv -v'
 
+# set coredump file to be created
+ulimit -c unlimited
+
 if islinux; then
     export PATH=/opt/bin:/opt/sbin:$PATH
     export PYTHONSTARTUP=~/.pythonstartup
