@@ -149,6 +149,11 @@ nnoremap k gk
 colorscheme solarized
 "colorscheme default
 
+" include man.vim to enable Man command
+runtime ftplugin/man.vim
+nmap K :Man <cword><CR>
+"let $GROFF_NO_SGR=1
+
 " for plugins managed via vundle
 set runtimepath+=~/.vim/vundle.git/
 call vundle#rc()
