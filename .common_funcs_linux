@@ -5,9 +5,12 @@ truecrypt_mount() {
 
 truecrypt_umount() {
     set_default
+    local i
     sudo umount /media/truecrypt*
     sudo umount /tmp/.truecrypt_aux_mnt*
-    sudo cryptsetup -v remove /dev/mapper/truecrypt*
+    for i in /dev/mapper/truecrypt[0-9]#; do
+        sudo cryptsetup -v remove "$i"
+    done
 }
 
 drop_caches() {
