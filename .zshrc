@@ -70,7 +70,7 @@ zstyle ':completion:*:default' list-colors ${(s.:.)ZLS_COLORS}
 case $TERM in
     *xterm*)
         precmd() {print -Pn  "\e]0;%M: %~\a"}
-        preexec() {print -Pn "\e]0;%M: $1\a"}
+        preexec() {print -Pn "\e]0;%M: $2\a"}
         ;;
 esac
 
