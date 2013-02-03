@@ -1,5 +1,6 @@
 #!/bin/bash -e
 set -o nounset
+set -x
 
 basedir=~/dotfiles
 
@@ -17,6 +18,7 @@ ln -s dotfiles/.common_funcs_darwin .common_funcs_darwin
 ln -s dotfiles/.pythonstartup .pythonstartup
 ln -s dotfiles/.vim/ .vim
 ln -s dotfiles/.gdbinit .gdbinit
+ln -s dotfiles/.tmux.conf .tmux.conf
 
 vimdir="${basedir}/.vim/"
 colorsdir="${vimdir}/colors/"
