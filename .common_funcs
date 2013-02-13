@@ -75,3 +75,8 @@ dups() {
     set_default
     sort "$@" | uniq -d
 }
+
+printp() {
+    set_default
+    ps -eo pgid,pid,user,args --sort user
+}
