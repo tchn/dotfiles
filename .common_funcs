@@ -78,5 +78,5 @@ dups() {
 
 printp() {
     set_default
-    ps -eo pgid,pid,user,args --sort user
+    ps -eo pgid,pid,user,args --sort user "$@"
 }
