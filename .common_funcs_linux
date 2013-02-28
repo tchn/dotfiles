@@ -19,7 +19,7 @@ drop_caches() {
     echo 3 1>/dev/null | sudo tee /proc/sys/vm/drop_caches
 }
 
-copy2clip() {
+cp2clip() {
     set_default
     if_exists $(which xclip) && xclip -i -selection clipboard
 }
