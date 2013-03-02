@@ -80,3 +80,13 @@ printp() {
     set_default
     ps -eo pgid,pid,user,args --sort user "$@"
 }
+
+seqhex() {
+    local i start end
+    start=$((0x$1));
+    end=$((0x$2));
+
+    for i in $(seq "$start" "$end"); do
+        printf "%x\n" "$i";
+    done;
+}
