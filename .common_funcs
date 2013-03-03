@@ -82,6 +82,7 @@ printp() {
 }
 
 seqhex() {
+    set_default;
     local i start end
     start=$((0x$1));
     end=$((0x$2));
@@ -89,4 +90,9 @@ seqhex() {
     for i in $(seq "$start" "$end"); do
         printf "%x\n" "$i";
     done;
+}
+
+rep() {
+    set_default;
+    printf "%0$2d" | tr 0 "$1";
 }
