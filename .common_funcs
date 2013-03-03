@@ -93,6 +93,6 @@ seqhex() {
 }
 
 rep() {
-    set_default;
-    printf "%0$2d" | tr 0 "$1";
+    set_default
+    printf "%0$2d" | sed -e "s/0/$1/g";
 }
