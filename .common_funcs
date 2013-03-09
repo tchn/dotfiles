@@ -81,6 +81,11 @@ printp() {
     ps -eo pgid,pid,user,args --sort user "$@"
 }
 
+psgrep() {
+    set_default;
+    ps auxf | grep -v "grep" | grep -i "$@";
+}
+
 seqhex() {
     set_default;
     local i start end
@@ -95,4 +100,9 @@ seqhex() {
 rep() {
     set_default
     printf "%0$2d" | sed -e "s/0/$1/g";
+}
+
+fname() {
+    set_default;
+    find . -mindepth 1 -iname "$@";
 }
