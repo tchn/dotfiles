@@ -177,6 +177,9 @@ Bundle 'fontzoom.vim'
 "matchit
 Bundle 'matchit.zip'
 
+"closetag.vim
+Bundle 'closetag.vim'
+
 "ack.vim
 Bundle 'ack.vim'
 " With Debian, ack is provided with a package named 'ack-grep', and ack.vim cannnot find ack executable. Try `ln -s /usr/bin/ack-grep /usr/local/bin/ack` because somehow the below does not work.
@@ -203,6 +206,9 @@ Bundle 'fugitive.vim'
 
 "git.zip
 Bundle 'git.zip'
+
+"ctrlp.vim
+Bundle 'ctrlp.vim'
 
 "The-NERD-tree
 Bundle 'The-NERD-tree'
