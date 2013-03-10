@@ -146,7 +146,7 @@ nnoremap j gj
 nnoremap k gk
 
 " color scheme
-colorscheme solarized
+colorscheme jellybeans
 "colorscheme default
 
 " include man.vim to enable Man command
@@ -188,6 +188,9 @@ Bundle 'ack.vim'
 
 "surround.vim
 Bundle 'surround.vim'
+
+"simple-pairs
+Bundle 'simple-pairs'
 
 "a.vim
 Bundle 'a.vim'
@@ -238,5 +241,9 @@ Bundle 'SuperTab'
 "au Filetype python set omnifunc=pythoncomplete#Complete
 "let g:SuperTabDefaultCompletionType = "context"
 
+"colorschemes
 " Solarized
-Bundle 'Solarized'
+" Bundle 'Solarized'
+
+"jellybeans
+Bundle 'jellybeans.vim'
