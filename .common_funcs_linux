@@ -28,36 +28,6 @@ cp2clip() {
     if_exists $(which xclip) && xclip -i -selection clipboard
 }
 
-get_chrome_profile() {
-    profile_dir="${HOME}/.config/chromium/"
-    chrome_dirs=($(find "${profile_dir}" -maxdepth 1 -type d));
-    
-    for d in "${chrome_dirs[@]}";
-    do
-        if [ -e "${d}/Local State" ]; then
-            basename "$d";
-        fi
-    done
-    echo "Create_New_Profile";
-}
-
-run_chrome() {
-
-profile_dir="${HOME}/.config/chromium/"
-
-if_exists $(which zenity) || exit 1;
-if_exists $(which chromium) || exit 1;
-
-profile=$(get_chrome_profile | zenity --list --title "Chrome Profile" --text "Select a profile or create new one" --column "Profiles" --width=200 --height=300) || exit 1;
-
-if [ "${profile}" = "Create_New_Profile" ]; then
-    new_profile=$(zenity --entry --title "Name a new profile" --text "Name a new profile");
-    chromium --enable-udd-profiles --user-data-dir="${profile_dir}${new_profile}";
-else
-    chromium --user-data-dir="${profile_dir}${profile}";
-fi
-}
-
 mcd() {
     set_default
     mkdir -p "$1" && cd "$1"

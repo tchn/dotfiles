@@ -14,6 +14,7 @@ ln -s dotfiles/.gvimrc .gvimrc
 ln -s dotfiles/.zshrc .zshrc
 ln -s dotfiles/.common_funcs .common_funcs
 ln -s dotfiles/.common_funcs_linux .common_funcs_linux
+ln -s dotfiles/.common_funcs_zsh .common_funcs_zsh
 ln -s dotfiles/.common_funcs_darwin .common_funcs_darwin
 ln -s dotfiles/.pythonstartup .pythonstartup
 ln -s dotfiles/.vim/ .vim

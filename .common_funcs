@@ -106,3 +106,13 @@ fname() {
     set_default;
     find . -mindepth 1 -iname "$@";
 }
+
+whichsh(){
+    local cur_sh;
+    cur_sh=$(ps -o command $$ | tail -n1);
+    case "$cur_sh" in
+        "sh" ) return 1;;
+           * ) return 0;;
+    esac
+}
+
