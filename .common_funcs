@@ -107,7 +107,6 @@ fname() {
     find . -mindepth 1 -iname "$@";
 }
 
-<<<<<<< Updated upstream
 whichsh(){
     local cur_sh;
     cur_sh=$(ps -o command $$ | tail -n1);
@@ -117,7 +116,6 @@ whichsh(){
     esac
 }
 
-=======
 smbmount-osx() {
     set_default;
     sudo mount -t cifs "$1" "$2" -o user="$3",nounix,sec=ntlmssp;
@@ -134,4 +132,3 @@ man() {
         LESS_TERMCAP_us=$(printf "\e[1;32m") \
         man "$@";
 }
->>>>>>> Stashed changes
