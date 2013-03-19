@@ -101,6 +101,7 @@ if islinux; then
     source ~/.common_funcs_linux
     alias rm='rm -I -v'
     alias ls='ls --color=auto'
+    whichsh && . ~/.common_funcs_zsh    # unless sh is the current shell, import .common_funcs_zsh
 fi
 
 if isdarwin; then
