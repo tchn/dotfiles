@@ -111,8 +111,12 @@ if isdarwin; then
     source ~/.common_funcs_darwin
 fi
 
-# Add RVM to PATH for scripting
+# setup for ruby
+## Add RVM to PATH for scripting
 PATH=$PATH:$HOME/.rvm/bin
+
+## source chruby if installed
+[ -f /usr/local/share/chruby/chruby.sh ] && source /usr/local/share/chruby/chruby.sh
 
 # set coredump file to be created
 ulimit -c unlimited
