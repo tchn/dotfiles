@@ -190,7 +190,7 @@ Bundle 'ack.vim'
 Bundle 'surround.vim'
 
 "simple-pairs
-Bundle 'simple-pairs'
+"Bundle 'simple-pairs'
 
 "a.vim
 Bundle 'a.vim'
@@ -247,3 +247,7 @@ Bundle 'SuperTab'
 
 "jellybeans
 Bundle 'jellybeans.vim'
+
+"vinaries
+Bundle 'Shougo/vinarise'
+Bundle 's-yukikaze/vinarise-plugin-peanalysis'
