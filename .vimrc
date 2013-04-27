@@ -159,10 +159,10 @@ set runtimepath+=~/.vim/vundle.git/
 call vundle#rc()
 
 "taglist (requires ctag or exeburant ctag)
-Bundle 'taglist.vim'
-"" below is for osx/macports
-"let Tlist_Ctags_Cmd='/opt/local/bin/ctags'
-let Tlist_inc_Winwidth=0
+"Bundle 'taglist.vim'
+""" below is for osx/macports
+""let Tlist_Ctags_Cmd='/opt/local/bin/ctags'
+"let Tlist_inc_Winwidth=0
 
 "buffer tab
 Bundle 'minibufexpl.vim'
@@ -196,7 +196,7 @@ Bundle 'surround.vim'
 Bundle 'a.vim'
 
 "Command-T (needs vim compiled with Ruby support)
-"Bundle 'Command-T'
+Bundle 'Command-T'
 
 "Syntastic
 Bundle 'Syntastic'
@@ -227,11 +227,11 @@ let g:neocomplcache_enable_smart_case = 1
 "The-NERD-Commenter
 Bundle 'The-NERD-Commenter'
 
-"Tagbar
+"Tagbar ( requires ctag or exeburant-ctag )
 Bundle 'Tagbar'
 
 " Gundo (needs vim compiled with Python support)
-"Bundle 'Gundo'
+Bundle 'Gundo'
 
 " TaskList.vim
 Bundle 'TaskList.vim'
@@ -245,6 +245,7 @@ Bundle 'SuperTab'
 " Solarized
 " Bundle 'Solarized'
 
+"colorscheme
 "jellybeans
 Bundle 'jellybeans.vim'
 
