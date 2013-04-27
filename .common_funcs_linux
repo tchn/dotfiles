@@ -32,3 +32,9 @@ mcd() {
     set_default
     mkdir -p "$1" && cd "$1"
 }
+
+wifiscan() {
+    set_default;
+    local wlan="$1"
+    if_exists $(whereis iwlist | awk -F ' ' '{print $2}') && sudo iwlist "$wlan" scan | egrep -i 'cell|essid|encryption|quality';
+}
