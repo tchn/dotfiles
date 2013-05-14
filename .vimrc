@@ -145,6 +145,9 @@ nnoremap <right> <nop>
 nnoremap j gj
 nnoremap k gk
 
+" override read-only permission by using sudo
+cmap w!! %!sudo tee > /dev/null %
+
 " color scheme
 colorscheme jellybeans
 "colorscheme default
@@ -197,6 +200,7 @@ Bundle 'a.vim'
 
 "Command-T (needs vim compiled with Ruby support)
 Bundle 'Command-T'
+let g:CommandTAlwaysShowDotFiles = 1
 
 "Syntastic
 Bundle 'Syntastic'
