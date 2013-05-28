@@ -256,3 +256,9 @@ Bundle 'jellybeans.vim'
 "vinaries
 Bundle 'Shougo/vinarise'
 Bundle 's-yukikaze/vinarise-plugin-peanalysis'
+
+"cscope_maps
+Bundle 'tchn/cscope_maps'
+
+"autoload_cscope.vim
+Bundle 'autoload_cscope.vim'
