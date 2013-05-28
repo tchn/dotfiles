@@ -2,7 +2,7 @@
 #
 # DESCRIPTION: A user-friendly gdb configuration file, for x86/x86_64 and ARM platforms.
 #
-# REVISION : 8.0 (13/04/2012)
+# REVISION : 8.0.4 (08/05/2013)
 #
 # CONTRIBUTORS: mammon_, elaine, pusillus, mong, zhang le, l0kit,
 #               truthix the cyberpunk, fG!, gln
@@ -30,6 +30,25 @@
 #
 # CHANGELOG: (older changes at the end of the file)
 #
+#   Version 8.0.4 (08/05/2013)
+#     - Detect automatically 32 or 64 bits archs using sizeof(void*). 
+#       Thanks to Tyilo for the simple but very effective idea!
+#     - Typo in hexdump command also fixed by vuquangtrong.
+#     - Add shortcuts to attach to VMware kernel debugging gdb stub (kernel32 and kernel64)
+#
+#   Version 8.0.3 (21/03/2013)
+#	  - Add option to colorize or not output (thanks to argp and skier for the request and ideas!)
+#     - Convert the escape codes into functions so colors can be easily customized
+#	  - Other enhancements available at git commit logs
+#       Thanks to Plouj, argp, xristos for their ideas and fixes!
+#
+#   Version 8.0.2 (31/07/2012)
+#     - Merge pull request from mheistermann to support local modifications in a .gdbinit.local file
+#     - Add a missing opcode to the stepo command
+#
+#   Version 8.0.1 (23/04/2012)
+#     - Small bug fix to the attsyntax and intelsyntax commands (changing X86 flavor variable was missing)
+#
 #   Version 8.0 (13/04/2012)
 #     - Merged x86/x64 and ARM versions
 #     - Added commands intelsyntax and attsyntax to switch between x86 disassembly flavors
@@ -45,8 +64,6 @@
 
 # set to 1 to have ARM target debugging as default, use the "arm" command to switch inside gdb
 set $ARM = 0
-# set to 1 to enable 64bits target by default (32bits is the default)
-set $64BITS = 1
 # set to 0 if you have problems with the colorized prompt - reported by Plouj with Ubuntu gdb 7.2
 set $COLOUREDPROMPT = 1
 # Colour the first line of the disassembly - default is green, if you want to change it search for
@@ -72,13 +89,11 @@ set $SKIPSTEP = 1
 set $ARMOPCODES = 1
 # x86 disassembly flavor: 0 for Intel, 1 for AT&T
 set $X86FLAVOR = 0
+# use colorized output or not
+set $USECOLOR = 1
 
 set confirm off
 set verbose off
-
-if $COLOUREDPROMPT == 1
-	set prompt \033[31mgdb$ \033[0m
-end
 
 set output-radix 0x10
 set input-radix 0x10
@@ -95,11 +110,101 @@ set $CONTEXTSIZE_DATA  = 8
 set $CONTEXTSIZE_CODE  = 8
 
 # __________________end gdb options_________________
+#
 
 #                   my preference
 # Save command history
 set history filename ~/.gdbhistory
 set history save on
+
+# __________________color functions_________________
+#
+# color codes
+set $BLACK = 0
+set $RED = 1
+set $GREEN = 2
+set $YELLOW = 3
+set $BLUE = 4
+set $MAGENTA = 5
+set $CYAN = 6
+set $WHITE = 7
+
+# CHANGME: If you want to modify the "theme" change the colors here
+#          or just create a ~/.gdbinit.local and set these variables there
+set $COLOR_REGNAME = $GREEN
+set $COLOR_REGVAL = $BLACK
+set $COLOR_REGVAL_MODIFIED  = $RED
+set $COLOR_SEPARATOR = $BLUE
+set $COLOR_CPUFLAGS = $RED
+
+# this is ugly but there's no else if available :-(
+define color
+ if $USECOLOR == 0
+	echo \033[0m
+ else
+ 	# BLACK
+ 	if $arg0 == 0
+ 		echo \033[30m
+ 	else
+ 		# RED
+	 	if $arg0 == 1
+	 		echo \033[31m
+	 	else
+	 		# GREEN
+	 		if $arg0 == 2
+	 			echo \033[32m
+	 		else
+	 			# YELLOW
+	 			if $arg0 == 3
+	 				echo \033[33m
+	 			else
+	 				# BLUE
+	 				if $arg0 == 4
+	 					echo \033[34m
+	 				else
+	 					# MAGENTA
+	 					if $arg0 == 5
+	 						echo \033[35m
+	 					else
+	 						# CYAN
+	 						if $arg0 == 6
+	 							echo \033[36m
+	 						else
+	 							# WHITE
+	 							if $arg0 == 7
+	 								echo \033[37m
+	 							end
+	 						end
+	 					end
+	 				end
+	 			end
+	 		end
+	 	end
+	 end
+ end
+end
+
+define color_reset
+	echo \033[0m
+end
+
+define color_bold
+	echo \033[1m
+end
+
+define color_underline
+	echo \033[4m
+end
+
+# can't use the color functions because we are using the set command
+if $COLOUREDPROMPT == 1
+	set prompt \033[31mgdb$ \033[0m
+end
+
+# this way anyone can have their custom prompt - argp's idea :-)
+# can also be used to redefine anything else in particular the colors aka theming
+# just remap the color variables defined above
+source ~/.gdbinit.local
 
 # Initialize these variables else comparisons will fail for colouring
 # we must initialize all of them at once, 32 and 64 bits, and ARM.
@@ -576,151 +681,156 @@ end
 
 define regarm
     printf "  "
-    echo \033[32m
+    # R0
+    color $COLOR_REGNAME
     printf "R0:"
     if ($r0 != $oldr0 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf "  0x%08X  ", $r0
-    
-    echo \033[32m
+    # R1
+    color $COLOR_REGNAME
     printf "R1:"
     if ($r1 != $oldr1 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%08X  ", $r1
-
-    echo \033[32m
+	# R2
+    color $COLOR_REGNAME
     printf "R2:"
     if ($r2 != $oldr2 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf "  0x%08X  ", $r2
-
-    echo \033[32m
+	# R3
+    color $COLOR_REGNAME
     printf "R3:"
     if ($r3 != $oldr3 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf "  0x%08X\n", $r3
     printf "  "
-
-    echo \033[32m
+	# R4
+    color $COLOR_REGNAME
     printf "R4:"
     if ($r4 != $oldr4 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf "  0x%08X  ", $r4
-    
-    echo \033[32m
+    # R5
+    color $COLOR_REGNAME
     printf "R5:"
     if ($r5 != $oldr5 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%08X  ", $r5
-
-    echo \033[32m
+	# R6
+    color $COLOR_REGNAME
     printf "R6:"
     if ($r6 != $oldr6 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf "  0x%08X  ", $r6
-
-    echo \033[32m
+	# R7
+    color $COLOR_REGNAME
     printf "R7:"
     if ($r7 != $oldr7 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf "  0x%08X\n", $r7
     printf "  "
-
-    echo \033[32m
+	# R8
+    color $COLOR_REGNAME
     printf "R8:"
     if ($r8 != $oldr8 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf "  0x%08X  ", $r8
-
-    echo \033[32m
+	# R9
+    color $COLOR_REGNAME
     printf "R9:"
     if ($r9 != $oldr9 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%08X  ", $r9
-
-    echo \033[32m
+	# R10
+    color $COLOR_REGNAME
     printf "R10:"
     if ($r10 != $oldr10 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%08X  ", $r10
-
-    echo \033[32m
+	# R11
+    color $COLOR_REGNAME
     printf "R11:"
     if ($r11 != $oldr11 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%08X ", $r11
     dumpjump
     printf "\n"
-    echo \033[32m
+    # R12
+    color $COLOR_REGNAME
     printf "  R12:"
     if ($r12 != $oldr12 && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%08X", $r12
     printf "  "
-    echo \033[32m
+    # SP
+    color $COLOR_REGNAME
     printf "SP:"
     if ($sp != $oldsp && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%08X  ", $sp
-
-    echo \033[32m
+	# LR
+    color $COLOR_REGNAME
     printf "LR:"
     if ($lr != $oldlr && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf "  0x%08X  ", $lr
-
-    echo \033[32m
+	# PC
+    color $COLOR_REGNAME
     printf "PC:"
-    echo \033[0m
+    color $COLOR_REGVAL_MODIFIED
     printf "  0x%08X  ", $pc
-    echo \033[1m\033[4m\033[31m
+    color_bold
+    color_underline
+    color $COLOR_CPUFLAGS
     flags
-	echo \033[0m
+	color_reset
     printf "\n"
 end
 document regarm
@@ -731,182 +841,185 @@ define regx64
     # 64bits stuff
     printf "  "
     # RAX
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "RAX:"
     if ($rax != $oldrax && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $rax
     # RBX
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "RBX:"
     if ($rbx != $oldrbx && $SHOWREGCHANGES == 1)
-        echo \033[31m
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $rbx
-    # RCX
-    echo \033[32m
-    printf "RCX:"
-    if ($rcx != $oldrcx && $SHOWREGCHANGES == 1)
-        echo \033[31m
+    # RBP
+    color $COLOR_REGNAME
+    printf "RBP:"
+    if ($rbp != $oldrbp && $SHOWREGCHANGES == 1)
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
+        color $COLOR_REGVAL
     end
-    printf " 0x%016lX  ", $rcx
-    # RDX
-    echo \033[32m
-    printf "RDX:"
-    if ($rdx != $oldrdx && $SHOWREGCHANGES == 1)
-        echo \033[31m        
+    printf " 0x%016lX  ", $rbp
+    # RSP
+    color $COLOR_REGNAME
+    printf "RSP:"
+    if ($rsp != $oldrsp && $SHOWREGCHANGES == 1)
+        color $COLOR_REGVAL_MODIFIED
     else
-        echo \033[0m
-    end
-    printf " 0x%016lX  ", $rdx
-	echo \033[1m\033[4m\033[31m
-    flags
-    echo \033[0m
-    printf "  "
-    # RSI
-    echo \033[32m
-    printf "RSI:"
-    if ($rsi != $oldrsi && $SHOWREGCHANGES == 1)
-	    echo \033[31m
-	else
-	    echo \033[0m
-	end
-	printf " 0x%016lX  ", $rsi
-	# RDI
-    echo \033[32m
-   	printf "RDI:"
-	if ($rdi != $oldrdi && $SHOWREGCHANGES == 1)
-	    echo \033[31m
-	else
-	    echo \033[0m
-	end
-	printf " 0x%016lX  ", $rdi
-	# RBP
-    echo \033[32m
-   	printf "RBP:"
-	if ($rbp != $oldrbp && $SHOWREGCHANGES == 1)
-	    echo \033[31m
-	else
-	    echo \033[0m
-	end
-	printf " 0x%016lX  ", $rbp
-	# RSP
-    echo \033[32m
-   	printf "RSP:"
-	if ($rsp != $oldrsp && $SHOWREGCHANGES == 1)
-	    echo \033[31m
-	else
-	    echo \033[0m
+        color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $rsp
-    echo \033[32m
+    color_bold
+    color_underline
+    color $COLOR_CPUFLAGS
+    flags
+    color_reset
+    printf "  "
+    # RDI
+    color $COLOR_REGNAME
+    printf "RDI:"
+    if ($rdi != $oldrdi && $SHOWREGCHANGES == 1)
+	    color $COLOR_REGVAL_MODIFIED
+	else
+	    color $COLOR_REGVAL
+	end
+	printf " 0x%016lX  ", $rdi
+	# RSI
+    color $COLOR_REGNAME
+   	printf "RSI:"
+	if ($rsi != $oldrsi && $SHOWREGCHANGES == 1)
+	    color $COLOR_REGVAL_MODIFIED
+	else
+	    color $COLOR_REGVAL
+	end
+	printf " 0x%016lX  ", $rsi
+	# RDX
+    color $COLOR_REGNAME
+   	printf "RDX:"
+	if ($rdx != $oldrdx && $SHOWREGCHANGES == 1)
+	    color $COLOR_REGVAL_MODIFIED
+	else
+	    color $COLOR_REGVAL
+	end
+	printf " 0x%016lX  ", $rdx
+	# RCX
+    color $COLOR_REGNAME
+   	printf "RCX:"
+	if ($rcx != $oldrcx && $SHOWREGCHANGES == 1)
+	    color $COLOR_REGVAL_MODIFIED
+	else
+	    color $COLOR_REGVAL
+    end
+    printf " 0x%016lX  ", $rcx
+    # RIP
+    color $COLOR_REGNAME
     printf "RIP:"
-    echo \033[0m
+    color $COLOR_REGVAL_MODIFIED
     printf " 0x%016lX\n  ", $rip
     # R8
-    echo \033[32m
+    color $COLOR_REGNAME
    	printf "R8 :"
 	if ($r8 != $oldr8 && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $r8
     # R9
-    echo \033[32m
+    color $COLOR_REGNAME
    	printf "R9 :"
     if ($r9 != $oldr9 && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $r9
     # R10
-    echo \033[32m
+    color $COLOR_REGNAME
    	printf "R10:"
     if ($r10 != $oldr10 && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $r10
     # R11
-   	echo \033[32m
+   	color $COLOR_REGNAME
     printf "R11:"
 	if ($r11 != $oldr11 && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $r11
     # R12
-    echo \033[32m
+    color $COLOR_REGNAME
 	printf "R12:"
     if ($r12 != $oldr12 && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%016lX\n  ", $r12
     # R13
-    echo \033[32m
+    color $COLOR_REGNAME
    	printf "R13:"
     if ($r13 != $oldr13 && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $r13
     # R14
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "R14:"
     if ($r14 != $oldr14 && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%016lX  ", $r14
     # R15
-	echo \033[32m
+	color $COLOR_REGNAME
     printf "R15:"
     if ($r15 != $oldr15 && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%016lX\n  ", $r15
-  	echo \033[32m
+  	color $COLOR_REGNAME
     printf "CS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $cs
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "DS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $ds
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "ES:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $es
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "FS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $fs
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "GS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $gs
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "SS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X", $ss
-    echo \033[0m
+    color_reset
 end
 document regx64
 Auxiliary function to display X86_64 registers.
@@ -916,114 +1029,113 @@ end
 define regx86
     printf "  "
     # EAX
-    echo \033[32m
+    color $COLOR_REGNAME
 	printf "EAX:"
     if ($eax != $oldeax && $SHOWREGCHANGES == 1)
-   	 	echo \033[31m   	 	
+   	 	color $COLOR_REGVAL_MODIFIED
    	else
-   	 	echo \033[0m
+   	 	color $COLOR_REGVAL
    	end
    	printf " 0x%08X  ", $eax
    	# EBX
-    echo \033[32m
+    color $COLOR_REGNAME
    	printf "EBX:"
    	if ($ebx != $oldebx && $SHOWREGCHANGES == 1) 
-	    echo \033[31m   		
+	    color $COLOR_REGVAL_MODIFIED		
    	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
    	end
    	printf " 0x%08X  ", $ebx
    	# ECX
-    echo \033[32m
+    color $COLOR_REGNAME
    	printf "ECX:"
    	if ($ecx != $oldecx && $SHOWREGCHANGES == 1)
-	    echo \033[31m	    
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
 	end
 	printf " 0x%08X  ", $ecx
 	# EDX
+	color $COLOR_REGNAME
+	printf "EDX:"
 	if ($edx != $oldedx && $SHOWREGCHANGES == 1)
-	    echo \033[32m
-    	printf "EDX:"
-	    echo \033[31m
-	    printf " 0x%08X  ", $edx
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[32m
-    	printf "EDX:"
-	    echo \033[0m
-	    printf " 0x%08X  ", $edx
+	    color $COLOR_REGVAL
 	end
-    echo \033[1m\033[4m\033[31m
+        printf " 0x%08X  ", $edx
+	color_bold
+	color_underline
+	color $COLOR_CPUFLAGS
     flags
-    echo \033[0m
+    color_reset
     printf "  "
     # ESI
-	echo \033[32m
+	color $COLOR_REGNAME
     printf "ESI:"
     if ($esi != $oldesi && $SHOWREGCHANGES == 1)
-	    echo \033[31m	    
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
 	end
 	printf " 0x%08X  ", $esi
 	# EDI
-	echo \033[32m
+	color $COLOR_REGNAME
     printf "EDI:"
 	if ($edi != $oldedi && $SHOWREGCHANGES == 1)
-	    echo \033[31m	    
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
 	end
 	printf " 0x%08X  ", $edi
 	# EBP
-	echo \033[32m
+	color $COLOR_REGNAME
 	printf "EBP:"
 	if ($ebp != $oldebp && $SHOWREGCHANGES == 1)
-	    echo \033[31m
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
 	end
 	printf " 0x%08X  ", $ebp
 	# ESP
-	echo \033[32m
+	color $COLOR_REGNAME
     printf "ESP:"
 	if ($esp != $oldesp && $SHOWREGCHANGES == 1)
-	    echo \033[31m	    
+	    color $COLOR_REGVAL_MODIFIED
 	else
-	    echo \033[0m
+	    color $COLOR_REGVAL
     end
     printf " 0x%08X  ", $esp
     # EIP
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "EIP:"
-    echo \033[0m
+    color $COLOR_REGVAL_MODIFIED
     printf " 0x%08X\n  ", $eip
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "CS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $cs
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "DS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $ds
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "ES:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $es
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "FS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $fs
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "GS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X  ", $gs
-    echo \033[32m
+    color $COLOR_REGNAME
     printf "SS:"
-    echo \033[0m
+    color $COLOR_REGVAL
     printf " %04X", $ss
-    echo \033[0m
+    color_reset
 end
 document regx86
 Auxiliary function to display X86 registers.
@@ -1051,7 +1163,7 @@ define reg
 			set $oldlr  = $lr
 	    end
     else
-        if ($64BITS == 1)
+        if (sizeof(void *) == 8)
             regx64 
         else
             regx86
@@ -1059,13 +1171,13 @@ define reg
         # call smallregisters
 	    smallregisters
         # display conditional jump routine
-	    if ($64BITS == 1)
+	    if (sizeof(void *) == 8)
     	    printf "\t\t\t\t"
     	end
         dumpjump
         printf "\n"
         if ($SHOWREGCHANGES == 1)
-    	    if ($64BITS == 1)
+    	    if (sizeof(void *) == 8)
 	        	set $oldrax = $rax
 			    set $oldrbx = $rbx
     			set $oldrcx = $rcx
@@ -1101,7 +1213,7 @@ end
 
 
 define smallregisters
-    if ($64BITS == 1)
+    if (sizeof(void *) == 8)
     #64bits stuff
 	    # from rax
     	set $eax = $rax & 0xffffffff
@@ -1296,7 +1408,7 @@ define hexdump
 			set $_count = 0
 			while ($_count < $arg1)
 				set $_i = ($_count * 0x10)
-				hexdump_aux $data_addr+$_i
+				hexdump_aux $arg0+$_i
 				set $_count++
 			end
 		else
@@ -1315,20 +1427,20 @@ define hexdump_aux
     if $argc != 1
         help hexdump_aux
     else
-        echo \033[1m
-        if ($64BITS == 1)
+    	color_bold
+        if (sizeof(void *) == 8)
             printf "0x%016lX : ", $arg0
         else
             printf "0x%08X : ", $arg0
         end
-        echo \033[0m
+        color_reset
         hex_quad $arg0
-        echo \033[1m
+        color_bold
         printf " - "
-        echo \033[0m
+        color_reset
         hex_quad $arg0+8
         printf " "
-        echo \033[1m
+        color_bold
         ascii_char $arg0+0x0
         ascii_char $arg0+0x1
         ascii_char $arg0+0x2
@@ -1345,7 +1457,7 @@ define hexdump_aux
         ascii_char $arg0+0xD
         ascii_char $arg0+0xE
         ascii_char $arg0+0xF
-        echo \033[0m
+        color_reset
         printf "\n"
     end
 end
@@ -1360,21 +1472,22 @@ define ddump
     if $argc != 1
         help ddump
     else
-        echo \033[34m
-        if ($64BITS == 1)
+        color $COLOR_SEPARATOR
+        if (sizeof(void *) == 8)
             printf "[0x%04X:0x%016lX]", $ds, $data_addr
         else
             printf "[0x%04X:0x%08X]", $ds, $data_addr
         end
-    	echo \033[34m
+    	color $COLOR_SEPARATOR
     	printf "------------------------"
         printf "-------------------------------"
-        if ($64BITS == 1)
+        if (sizeof(void *) == 8)
             printf "-------------------------------------"
 	    end
-	    echo \033[1;34m
+	    color_bold
+	    color $COLOR_SEPARATOR
 	    printf "[data]\n"
-        echo \033[0m
+        color_reset
         set $_count = 0
         while ($_count < $arg0)
             set $_i = ($_count * 0x10)
@@ -1420,7 +1533,7 @@ define datawin
         end
 ################################# X86
     else
-        if ($64BITS == 1)
+        if (sizeof(void *) == 8)
             if ((($rsi >> 0x18) == 0x40) || (($rsi >> 0x18) == 0x08) || (($rsi >> 0x18) == 0xBF))
                 set $data_addr = $rsi
             else
@@ -1509,11 +1622,11 @@ define dumpjump
         if ( ($_byte1 == 0x77) || ($_byte1 == 0x0F && $_byte2 == 0x87) )
          	# cf=0 and zf=0
  	        if ($_cf_flag == 0 && $_zf_flag == 0)
-	        	echo \033[31m
+	        	color $RED
            		printf "  Jump is taken (c=0 and z=0)"
           	else
             	# cf != 0 or zf != 0
-           		echo \033[31m
+           		color $RED
            		printf "  Jump is NOT taken (c!=0 or z!=0)"
           	end 
         end
@@ -1522,11 +1635,11 @@ define dumpjump
         if ( ($_byte1 == 0x73) || ($_byte1 == 0x0F && $_byte2 == 0x83) )
          	# cf=0
          	if ($_cf_flag == 0)
-		        echo \033[31m
+		        color $RED
            		printf "  Jump is taken (c=0)"
           	else
             	# cf != 0
-           		echo \033[31m
+           		color $RED
    		        printf "  Jump is NOT taken (c!=0)"
           	end 
         end
@@ -1535,11 +1648,11 @@ define dumpjump
         if ( ($_byte1 == 0x72) || ($_byte1 == 0x0F && $_byte2 == 0x82) )
             # cf=1
  	        if ($_cf_flag == 1)
-		        echo \033[31m
+		        color $RED
         		printf "  Jump is taken (c=1)"
           	else
             	# cf != 1
-           		echo \033[31m
+           		color $RED
    		        printf "  Jump is NOT taken (c!=1)"
           	end 
         end
@@ -1548,11 +1661,11 @@ define dumpjump
         if ( ($_byte1 == 0x76) || ($_byte1 == 0x0F && $_byte2 == 0x86) )
          	# cf=1 or zf=1
          	if (($_cf_flag == 1) || ($_zf_flag == 1))
-		        echo \033[31m
+		        color $RED
            		printf "  Jump is taken (c=1 or z=1)"
           	else
             	# cf != 1 or zf != 1
-           		echo \033[31m
+           		color $RED
            		printf "  Jump is NOT taken (c!=1 or z!=1)"
           	end 
         end
@@ -1560,10 +1673,10 @@ define dumpjump
         if ($_byte1 == 0xE3)
          	# cx=0 or ecx=0
          	if (($ecx == 0) || ($cx == 0))
-        		echo \033[31m
+        		color $RED
    		        printf "  Jump is taken (cx=0 or ecx=0)"
           	else
-   	    	    echo \033[31m
+   	    	    color $RED
        	    	printf "  Jump is NOT taken (cx!=0 or ecx!=0)"
           	end 
         end
@@ -1572,11 +1685,11 @@ define dumpjump
         if ( ($_byte1 == 0x74) || ($_byte1 == 0x0F && $_byte2 == 0x84) )
              # ZF = 1
           	if ($_zf_flag == 1)
-   		        echo \033[31m
+   		        color $RED
            		printf "  Jump is taken (z=1)"
           	else
                 # ZF = 0
-           		echo \033[31m
+           		color $RED
    		        printf "  Jump is NOT taken (z!=1)"
           	end 
         end
@@ -1585,10 +1698,10 @@ define dumpjump
         if ( ($_byte1 == 0x7F) || ($_byte1 == 0x0F && $_byte2 == 0x8F) )
             # zf = 0 and sf = of
   	        if (($_zf_flag == 0) && ($_sf_flag == $_of_flag))
-   		        echo \033[31m
+   		        color $RED
    		        printf "  Jump is taken (z=0 and s=o)"
          	else
-   		        echo \033[31m
+   		        color $RED
    		        printf "  Jump is NOT taken (z!=0 or s!=o)"
   	        end 
         end
@@ -1597,10 +1710,10 @@ define dumpjump
         if ( ($_byte1 == 0x7D) || ($_byte1 == 0x0F && $_byte2 == 0x8D) )
             # sf = of
   	        if ($_sf_flag == $_of_flag)
-   		        echo \033[31m
+   		        color $RED
    		        printf "  Jump is taken (s=o)"
   	        else
-   		        echo \033[31m
+   		        color $RED
    		        printf "  Jump is NOT taken (s!=o)"
   	        end 
         end
@@ -1609,10 +1722,10 @@ define dumpjump
         if ( ($_byte1 == 0x7C) || ($_byte1 == 0x0F && $_byte2 == 0x8C) )
             # sf != of
   	        if ($_sf_flag != $_of_flag)
-   		        echo \033[31m
+   		        color $RED
    		        printf "  Jump is taken (s!=o)"
   	        else
-        		echo \033[31m
+        		color $RED
    		        printf "  Jump is NOT taken (s=o)"
   	        end 
         end
@@ -1621,10 +1734,10 @@ define dumpjump
         if ( ($_byte1 == 0x7E) || ($_byte1 == 0x0F && $_byte2 == 0x8E) )
             # zf = 1 or sf != of
         	if (($_zf_flag == 1) || ($_sf_flag != $_of_flag))
-   	        	echo \033[31m
+   	        	color $RED
    		        printf "  Jump is taken (zf=1 or sf!=of)"
   	        else
-   		        echo \033[31m
+   		        color $RED
    	        	printf "  Jump is NOT taken (zf!=1 or sf=of)"
   	        end 
         end
@@ -1633,11 +1746,11 @@ define dumpjump
         if ( ($_byte1 == 0x75) || ($_byte1 == 0x0F && $_byte2 == 0x85) )
             # ZF = 0
   	        if ($_zf_flag == 0)
-   		        echo \033[31m
+   		        color $RED
         		printf "  Jump is taken (z=0)"
   	        else
                 # ZF = 1
-   		        echo \033[31m
+   		        color $RED
    	        	printf "  Jump is NOT taken (z!=0)"
   	        end 
         end
@@ -1646,11 +1759,11 @@ define dumpjump
         if ( ($_byte1 == 0x71) || ($_byte1 == 0x0F && $_byte2 == 0x81) )
             # OF = 0
 	        if ($_of_flag == 0)
-   		        echo \033[31m
+   		        color $RED
    	        	printf "  Jump is taken (o=0)"
 	        else
                 # OF != 0
-           		echo \033[31m
+           		color $RED
            		printf "  Jump is NOT taken (o!=0)"
           	end 
         end
@@ -1659,11 +1772,11 @@ define dumpjump
         if ( ($_byte1 == 0x7B) || ($_byte1 == 0x0F && $_byte2 == 0x8B) )
              # PF = 0
           	if ($_pf_flag == 0)
-           		echo \033[31m
+           		color $RED
            		printf "  Jump is NOT taken (p=0)"
           	else
                 # PF != 0
-           		echo \033[31m
+           		color $RED
    		        printf "  Jump is taken (p!=0)"
           	end 
         end
@@ -1672,11 +1785,11 @@ define dumpjump
         if ( ($_byte1 == 0x79) || ($_byte1 == 0x0F && $_byte2 == 0x89) )
              # SF = 0
           	if ($_sf_flag == 0)
-   		        echo \033[31m
+   		        color $RED
            		printf "  Jump is taken (s=0)"
           	else
                  # SF != 0
-           		echo \033[31m
+           		color $RED
    		        printf "  Jump is NOT taken (s!=0)"
           	end 
         end
@@ -1685,11 +1798,11 @@ define dumpjump
         if ( ($_byte1 == 0x70) || ($_byte1 == 0x0F && $_byte2 == 0x80) )
              # OF = 1
         	if ($_of_flag == 1)
-        		echo \033[31m
+        		color $RED
    		        printf "  Jump is taken (o=1)"
           	else
                 # OF != 1
-           		echo \033[31m
+           		color $RED
    		        printf "  Jump is NOT taken (o!=1)"
           	end 
         end
@@ -1698,11 +1811,11 @@ define dumpjump
         if ( ($_byte1 == 0x7A) || ($_byte1 == 0x0F && $_byte2 == 0x8A) )
             # PF = 1
           	if ($_pf_flag == 1)
-   		        echo \033[31m
+   		        color $RED
            		printf "  Jump is taken (p=1)"
           	else
                  # PF = 0
-           		echo \033[31m
+           		color $RED
    		        printf "  Jump is NOT taken (p!=1)"
           	end 
         end
@@ -1711,11 +1824,11 @@ define dumpjump
         if ( ($_byte1 == 0x78) || ($_byte1 == 0x0F && $_byte2 == 0x88) )
              # SF = 1
         	if ($_sf_flag == 1)
-   		        echo \033[31m
+   		        color $RED
            		printf "  Jump is taken (s=1)"
           	else
                  # SF != 1
-           		echo \033[31m
+           		color $RED
            		printf "  Jump is NOT taken (s!=1)"
           	end 
         end
@@ -1729,140 +1842,140 @@ define dumpjumphelper
     # 0000 - EQ: Z == 1
     if ($_conditional == 0x0)
 	    if ($_z_flag == 1)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (z==1)"
     	else
-	    	echo \033[31m
+	    	color $RED
     		printf " Jump is NOT taken (z!=1)"
     	end
     end
     # 0001 - NE: Z == 0
     if ($_conditional == 0x1)
 	    if ($_z_flag == 0)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (z==0)"
 	    else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (z!=0)"
 	    end
     end
     # 0010 - CS: C == 1
     if ($_conditional == 0x2)
 	    if ($_c_flag == 1)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (c==1)"
 	    else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (c!=1)"
 	    end
     end
     # 0011 - CC: C == 0
     if ($_conditional == 0x3)
 	    if ($_c_flag == 0)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (c==0)"
 	    else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (c!=0)"
 	    end
     end
     # 0100 - MI: N == 1
     if ($_conditional == 0x4)
 	    if ($_n_flag == 1)
-		    echo \033[31m
+		    color $RED
 	    	printf " Jump is taken (n==1)"
     	else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (n!=1)"
 	    end
     end
     # 0101 - PL: N == 0
     if ($_conditional == 0x5)
 	    if ($_n_flag == 0)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (n==0)"
 	    else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (n!=0)"
 	    end
     end
     # 0110 - VS: V == 1
     if ($_conditional == 0x6)
 	    if ($_v_flag == 1)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (v==1)"
 	    else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (v!=1)"
 	    end
     end
     # 0111 - VC: V == 0
     if ($_conditional == 0x7)
 	    if ($_v_flag == 0)
-		    echo \033[31m
+		    color $RED
         	printf " Jump is taken (v==0)"
     	else
-	    	echo \033[31m
+	    	color $RED
     		printf " Jump is NOT taken (v!=0)"
 	    end
     end
     # 1000 - HI: C == 1 and Z == 0
     if ($_conditional == 0x8)
 	    if ($_c_flag == 1 && $_z_flag == 0)
-		    echo \033[31m
+		    color $RED
         	printf " Jump is taken (c==1 and z==0)"
     	else
-	    	echo \033[31m
+	    	color $RED
     		printf " Jump is NOT taken (c!=1 or z!=0)"
     	end
     end
     # 1001 - LS: C == 0 or Z == 1
     if ($_conditional == 0x9)
 	    if ($_c_flag == 0 || $_z_flag == 1)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (c==0 or z==1)"
 	    else
-    		echo \033[31m
+    		color $RED
     		printf " Jump is NOT taken (c!=0 or z!=1)"
 	    end
     end
     # 1010 - GE: N == V
     if ($_conditional == 0xA)
 	    if ($_n_flag == $_v_flag)
-		    echo \033[31m
+		    color $RED
         	printf " Jump is taken (n==v)"
     	else
-	    	echo \033[31m
+	    	color $RED
     		printf " Jump is NOT taken (n!=v)"
     	end
     end
     # 1011 - LT: N != V
     if ($_conditional == 0xB)
 	    if ($_n_flag != $_v_flag)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (n!=v)"
 	    else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (n==v)"
 	    end
     end
     # 1100 - GT: Z == 0 and N == V
     if ($_conditional == 0xC)
 	    if ($_z_flag == 0 && $_n_flag == $_v_flag)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (z==0 and n==v)"
 	    else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (z!=0 or n!=v)"
 	    end
     end
     # 1101 - LE: Z == 1 or N != V
     if ($_conditional == 0xD)
 	    if ($_z_flag == 1 || $_n_flag != $_v_flag)
-		    echo \033[31m
+		    color $RED
     		printf " Jump is taken (z==1 or n!=v)"
 	    else
-		    echo \033[31m
+		    color $RED
     		printf " Jump is NOT taken (z!=1 or n==v)"
 	    end
     end
@@ -1877,35 +1990,37 @@ end
 set $displayobjectivec = 0
 
 define context 
-    echo \033[34m
+    color $COLOR_SEPARATOR
     if $SHOWCPUREGISTERS == 1
 	    printf "----------------------------------------"
 	    printf "----------------------------------"
-	    if ($64BITS == 1)
+	    if (sizeof(void *) == 8)
 	        printf "---------------------------------------------"
 	    end
-	    echo \033[34m\033[1m
+	    color $COLOR_SEPARATOR
+	    color_bold
 	    printf "[regs]\n"
-	    echo \033[0m
+	    color_reset
 	    reg
-	    echo \033[36m
+	    color $CYAN
     end
     if $SHOWSTACK == 1
-    	echo \033[34m
-		if ($64BITS == 1)
+    	color $COLOR_SEPARATOR
+		if (sizeof(void *) == 8)
 		    printf "[0x%04X:0x%016lX]", $ss, $rsp
 		else
     	    printf "[0x%04X:0x%08X]", $ss, $esp
     	end
-        echo \033[34m
+        color $COLOR_SEPARATOR
 		printf "-------------------------"
     	printf "-----------------------------"
-	    if ($64BITS == 1)
+	    if (sizeof(void *) == 8)
 	        printf "-------------------------------------"
 	    end
-    	echo \033[34m\033[1m
+	    color $COLOR_SEPARATOR
+	    color_bold
 	    printf "[stack]\n"
-    	echo \033[0m
+    	color_reset
     	set $context_i = $CONTEXTSIZE_STACK
     	while ($context_i > 0)
        	    set $context_t = $sp + 0x10 * ($context_i - 1)
@@ -1932,7 +2047,7 @@ define context
     	    end
 
         	if ($__byte == 0x4244c89)
-         		set $objectivec = $edx
+         		set $objectivec = $ecx
      	    	set $displayobjectivec = 1
         	end
         else
@@ -1941,51 +2056,56 @@ define context
         # and now display it or not (we have no interest in having the info displayed after the call)
         if $__byte1 == 0xE8
             if $displayobjectivec == 1
-                echo \033[34m
+                color $COLOR_SEPARATOR
                 printf "--------------------------------------------------------------------"
-                if ($64BITS == 1)
+                if (sizeof(void *) == 8)
                     printf "---------------------------------------------"
                 end
-    			echo \033[34m\033[1m
+                color $COLOR_SEPARATOR
+                color_bold
 	    		printf "[ObjectiveC]\n"
-      	    	echo \033[0m\033[30m
+	    		color_reset
+      	    	color $BLACK
       		    x/s $objectivec
          	end   
          	set $displayobjectivec = 0     
         end
         if $displayobjectivec == 1
-            echo \033[34m
+            color $COLOR_SEPARATOR
           	printf "--------------------------------------------------------------------"
-          	if ($64BITS == 1)
+          	if (sizeof(void *) == 8)
 	            printf "---------------------------------------------"
     	    end
-	    	echo \033[34m\033[1m
+    	    color $COLOR_SEPARATOR
+    	    color_bold
 		    printf "[ObjectiveC]\n"
-          	echo \033[0m\033[30m
+		    color_reset
+          	color $BLACK
           	x/s $objectivec 
         end   
     end
-    echo \033[0m
+    color_reset
 # and this is the end of this little crap
 
     if $SHOWDATAWIN == 1
         datawin
     end
 
-    echo \033[34m
+    color $COLOR_SEPARATOR
     printf "--------------------------------------------------------------------------"
-    if ($64BITS == 1)
+    if (sizeof(void *) == 8)
 	    printf "---------------------------------------------"
 	end
-    echo \033[34m\033[1m
+	color $COLOR_SEPARATOR
+	color_bold
     printf "[code]\n"
-    echo \033[0m
+    color_reset
     set $context_i = $CONTEXTSIZE_CODE
     if ($context_i > 0)
         if ($SETCOLOUR1STLINE == 1)	
-	        echo \033[32m
+	        color $GREEN
     	    x /i $pc
-	        echo \033[0m
+	        color_reset
 	    else
 	    	x /i $pc
 	    end
@@ -1995,15 +2115,15 @@ define context
         x /i
         set $context_i--
     end
-    echo \033[34m
+    color $COLOR_SEPARATOR
     printf "----------------------------------------"
     printf "----------------------------------------"
-    if ($64BITS == 1)
+    if (sizeof(void *) == 8)
         printf "---------------------------------------------\n"
 	else
 	    printf "\n"
 	end
-    echo \033[0m
+    color_reset
 end
 document context
 Print context window, i.e. regs, stack, ds:esi and disassemble cs:eip.
@@ -2230,13 +2350,21 @@ define stepoframework
                     set $_nextaddress = $pc + 0x3
                 end
                 # call *0x????????(%ebx) (0xFF93????????) || 
-                if ($_byte2 == 0x93 || $_byte2 == 0x94 || $_byte2 == 0x90 || $_byte2 == 0x92)
+                if ($_byte2 == 0x93 || $_byte2 == 0x94 || $_byte2 == 0x90 || $_byte2 == 0x92 || $_byte2 == 0x95)
                     set $_nextaddress = $pc + 6
                 end
                 # call *0x????????(%ebx,%eax,4) (0xFF94??????????)
                 if ($_byte2 == 0x94)
                     set $_nextaddress = $pc + 7
                 end
+            end
+            # FIXME: still missing a few?
+            if ($_byte1 == 0x41 || $_byte1 == 0x40)
+               if ($_byte2 == 0xFF)
+                    if ($_byte3 == 0xD0 || $_byte3 == 0xD1 || $_byte3 == 0xD2 || $_byte3 == 0xD3 || $_byte3 == 0xD4 || $_byte3 == 0xD5 ||  $_byte3 == 0xD6 || $_byte3 == 0xD7)
+                        set $_nextaddress = $pc + 0x3
+                    end
+               end
             end
         end
         # if we have found a call to bypass we set a temporary breakpoint on next instruction and continue 
@@ -2570,7 +2698,7 @@ define rint3
 	    set $pc = $ORIGINAL_INT3ADDRESS
     else
     	set *(unsigned char *)$ORIGINAL_INT3ADDRESS = $ORIGINAL_INT3
-    	if $64BITS == 1
+    	if sizeof(void *) == 8
         	set $rip = $ORIGINAL_INT3ADDRESS
     	else
     	    set $eip = $ORIGINAL_INT3ADDRESS
@@ -2832,7 +2960,7 @@ end
 #define ptraceme
 #    catch syscall ptrace
 #    commands
-#        if ($64BITS == 0)
+#        if (sizeof(void *) == 4)
 #            if ($ebx == 0)
 #	        set $eax = 0
 #                continue
@@ -2912,13 +3040,13 @@ define assemble
         printf "Instructions will be written to stdout.\n"
     end
     printf "Type instructions, one per line."
-    echo \033[1m
+	color_bold
     printf " Do not forget to use NASM assembler syntax!\n"
-    echo \033[0m
+    color_reset
     printf "End with a line saying just \"end\".\n"
     
     if ($argc)
-	    if ($64BITS == 1)
+	    if (sizeof(void *) == 8)
 		    # argument specified, assemble instructions into memory at address specified.
     		shell ASMOPCODE="$(while read -ep '>' r && test "$r" != end ; do echo -E "$r"; done)" ; GDBASMFILENAME=$RANDOM; \
     		echo -e "BITS 64\n$ASMOPCODE" >/tmp/$GDBASMFILENAME ; /usr/local/bin/nasm -f bin -o /dev/stdout /tmp/$GDBASMFILENAME | /usr/bin/hexdump -ve '1/1 "set *((unsigned char *) $arg0 + %#2_ax) = %#02x\n"' >/tmp/gdbassemble ; /bin/rm -f /tmp/$GDBASMFILENAME
@@ -2934,7 +3062,7 @@ define assemble
 		    shell /bin/rm -f /tmp/gdbassemble
     	end
     else
-	    if ($64BITS == 1)
+	    if (sizeof(void *) == 8)
 		    # no argument, assemble instructions to stdout
     		shell ASMOPCODE="$(while read -ep '>' r && test "$r" != end ; do echo -E "$r"; done)" ; GDBASMFILENAME=$RANDOM; \
 	    	echo -e "BITS 64\n$ASMOPCODE" >/tmp/$GDBASMFILENAME ; /usr/local/bin/nasm -f bin -o /dev/stdout /tmp/$GDBASMFILENAME | /usr/local/bin/ndisasm -i -b64 /dev/stdin ; \
@@ -3249,32 +3377,6 @@ Disable display of data window in the context window.
 end
 
 
-define 32bits
-	set $64BITS = 0
-    if $X86FLAVOR == 0
-        set disassembly-flavor intel
-    else
-        set disassembly-flavor att
-    end
-end
-document 32bits
-Set gdb to work with 32bits binaries.
-end
-
-
-define 64bits
-	set $64BITS = 1
-    if $X86FLAVOR == 0
-        set disassembly-flavor intel
-    else
-        set disassembly-flavor att
-    end
-end
-document 64bits
-Set gdb to work with 64bits binaries.
-end
-
-
 define arm
     if $ARMOPCODES == 1
         set arm show-opcode-bytes 1
@@ -3282,7 +3384,6 @@ define arm
        set arm show-opcode-bytes 1
     end
     set $ARM = 1
-    set $64BITS = 0
 end
 document arm
 Set gdb to work with ARM binaries.
@@ -3308,6 +3409,7 @@ end
 define intelsyntax
     if $ARM == 0
         set disassembly-flavor intel
+        set $X86FLAVOR = 0
     end
 end
 document intelsyntax
@@ -3318,10 +3420,47 @@ end
 define attsyntax
     if $ARM == 0
         set disassembly-flavor att
+        set $X86FLAVOR = 1
     end
 end
 document attsyntax
 Change disassembly syntax to at&t flavor.
+end
+
+define kernel32
+    # try to load kgmacros files
+    # failure is silent...
+    source /Volumes/KernelDebugKit/kgmacros
+    set architecture i386
+    if $argc == 1
+        target remote localhost:$arg0
+    else
+        target remote localhost:8832
+    end
+end
+document kernel32
+Attach to VMware gdb stub for 32 bits kernel.
+Add a parameter if you wish to debug another kernel port.
+VMware increments the port for each running VM with gdb stub.
+Default without parameters is port 8832.
+end
+
+define kernel64
+    # try to load kgmacros files
+    # failure is silent...
+    source /Volumes/KernelDebugKit/kgmacros
+    set architecture i386:x86-64
+    if $argc == 1
+        target remote localhost:$arg0
+    else
+        target remote localhost:8864
+    end
+end
+document kernel64
+Attach to VMware gdb stub for 64 bits kernel.
+Add a parameter if you wish to debug another kernel port.
+VMware increments the port for each running VM with gdb stub.
+Default without parameters is port 8864.
 end
 
 #EOF
