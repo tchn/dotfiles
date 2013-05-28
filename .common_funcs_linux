@@ -38,3 +38,14 @@ wifiscan() {
     local wlan="$1"
     if_exists $(whereis iwlist | awk -F ' ' '{print $2}') && sudo iwlist "$wlan" scan | egrep -i 'cell|essid|encryption|quality';
 }
+
+ccscope() {
+    set_default;
+    local project_dir="$1";
+    if [ ! -d "$project_dir" ]; then echo "project dir needs to be given"; fi;
+    local cscope_file="${project_dir}/cscope.files";
+    find "$project_dir" -name "*.c" -o -name "*.h" -o -name "*.cpp" | tee "${cscope_file}";
+    pushd "$project_dir";
+    cscope -b -q -k cscope.files;
+    popd;
+}
