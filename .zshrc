@@ -119,4 +119,4 @@ PATH=$PATH:$HOME/.rvm/bin
 [ -f /usr/local/share/chruby/chruby.sh ] && source /usr/local/share/chruby/chruby.sh
 
 # set coredump file to be created
-ulimit -c unlimited
+# ulimit -c unlimited
