@@ -262,3 +262,7 @@ Bundle 'tchn/cscope_maps'
 
 "autoload_cscope.vim
 Bundle 'autoload_cscope.vim'
+
+"previm
+Bundle 'kannokanno/previm'
+let g:previm_open_cmd = 'firefox'
