@@ -49,3 +49,8 @@ ccscope() {
     cscope -b -q -k cscope.files;
     popd;
 }
+
+randstr() {
+    set_default;
+    strings /dev/urandom | grep -o '[[:print:]]' | head -n 32 | tr -d '\n';
+}
