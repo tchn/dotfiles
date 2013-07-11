@@ -219,6 +219,7 @@ Bundle 'ctrlp.vim'
 
 "The-NERD-tree
 Bundle 'The-NERD-tree'
+map <F2> :NERDTreeToggle<CR>
 
 "neocomplcache
 Bundle 'neocomplcache'
@@ -233,6 +234,7 @@ Bundle 'The-NERD-Commenter'
 
 "Tagbar ( requires ctag or exeburant-ctag )
 Bundle 'Tagbar'
+autocmd VimEnter * nested :TagbarOpen
 
 " Gundo (needs vim compiled with Python support)
 Bundle 'Gundo'
@@ -266,3 +268,6 @@ Bundle 'autoload_cscope.vim'
 "previm
 Bundle 'kannokanno/previm'
 let g:previm_open_cmd = 'firefox'
+
+"Python-mode
+Bundle 'Python-mode-klen'
