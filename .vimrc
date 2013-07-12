@@ -235,6 +235,7 @@ Bundle 'The-NERD-Commenter'
 "Tagbar ( requires ctag or exeburant-ctag )
 Bundle 'Tagbar'
 autocmd VimEnter * nested :TagbarOpen
+map <F3> :TagbarToggle<CR>
 
 " Gundo (needs vim compiled with Python support)
 Bundle 'Gundo'
@@ -271,3 +272,6 @@ let g:previm_open_cmd = 'firefox'
 
 "Python-mode
 Bundle 'Python-mode-klen'
+
+"verilog
+Bundle 'verilog_systemverilog.vim'
