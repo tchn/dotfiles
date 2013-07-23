@@ -132,3 +132,8 @@ man() {
         LESS_TERMCAP_us=$(printf "\e[1;32m") \
         man "$@";
 }
+
+urldecode() {
+    local d=${1//+/ };
+    echo "${d//\%/\x}";
+}
