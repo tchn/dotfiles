@@ -54,3 +54,8 @@ randstr() {
     set_default;
     strings /dev/urandom | grep -o '[[:print:]]' | head -n 32 | tr -d '\n';
 }
+
+keycode() {
+    set_default;
+    xev | grep -A2 --line-buffered '^KeyRelease' | sed -n '/keycode /s/^.*keycode \([0-9]*\).* (.*, \(.*\)).*$/\1 \2/p'
+}
