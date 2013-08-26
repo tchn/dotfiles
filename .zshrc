@@ -96,7 +96,7 @@ alias cp='cp -v'
 alias mv='mv -v'
 
 if islinux; then
-    export PATH=/opt/bin:/opt/sbin:$PATH
+    export PATH=/usr/local/sbin:/opt/bin:/opt/sbin:$PATH
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_linux
     alias rm='rm -I -v'
@@ -120,3 +120,6 @@ PATH=$PATH:$HOME/.rvm/bin
 
 # set coredump file to be created
 # ulimit -c unlimited
+
+#
+#m=modprobe;t=thinkpad_acpi;$m -r $t;$m $t fan_control=1;echo level disengaged >/proc/acpi/ibm/fan
