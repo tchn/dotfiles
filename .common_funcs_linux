@@ -67,6 +67,6 @@ capdump() {
     local out_filename;
     interface="$1";
     out_filename=$(echo $(date +%Y%m%d-%s)).pcap;
-    my_ether_addr=$(ip a | grep "${interface}" -A1 | tail -n1 | cut -d ' ' -f6 | tr ':' '-');
-    dumpcap -i "${interface}" -w "${out_filename}" -f "ether host not ${my_ether_addr}";
+    my_ether_addr=$(cat /sys/class/net/${interface}/address)
+    dumpcap -i "${interface}" -w "${out_filename}" -f "ether host not ${my_ether_addr}" -P;
 }
