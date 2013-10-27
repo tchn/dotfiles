@@ -73,13 +73,12 @@ capdump() {
 
 run_wifimaster() {
     set_default;
-    set -x;
     local ssid psk in_inf;
     ssid=$1
     in_inf=$2
     if [ ! -f ~/.hostapd.conf ]; then
         echo -n "Input PSK: ";
-        while read -s psk; do echo $psk; break; done
+        while read -s psk; do break; done
     cat > ~/.hostapd.conf <<EOF
 interface=$in_inf
 driver=nl80211
