@@ -70,3 +70,31 @@ capdump() {
     my_ether_addr=$(cat /sys/class/net/${interface}/address)
     dumpcap -i "${interface}" -w "${out_filename}" -f "ether host not ${my_ether_addr}" -P;
 }
+
+run_wifimaster() {
+    set_default;
+    set -x;
+    local ssid psk in_inf;
+    ssid=$1
+    in_inf=$2
+    if [ ! -f ~/.hostapd.conf ]; then
+        echo -n "Input PSK: ";
+        while read -s psk; do echo $psk; break; done
+    cat > ~/.hostapd.conf <<EOF
+interface=$in_inf
+driver=nl80211
+ssid=$ssid
+channel=6
+hw_mode=g
+auth_algs=1
+wpa=3
+wpa_passphrase=$psk
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=CCMP
+rsn_pairwise=CCMP
+EOF
+    fi;
+
+    chmod 0600 ~/.hostapd.conf;
+    sudo hostapd ~/.hostapd.conf;
+}
