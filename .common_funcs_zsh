@@ -12,13 +12,13 @@ get_chrome_profile() {
 }
 
 run_chrome() {
-
 profile_dir="${HOME}/.config/chromium/"
 
 if_exists $(which zenity) || exit 1;
 if_exists $(which chromium) || exit 1;
 
 profile=$(get_chrome_profile | zenity --list --title "Chrome Profile" --text "Select a profile or create new one" --column "Profiles" --width=200 --height=300) || exit 1;
+profile=$(echo "${profile}" | cut -d '|' -f1)
 
 if [ "${profile}" = "Create_New_Profile" ]; then
     new_profile=$(zenity --entry --title "Name a new profile" --text "Name a new profile");
