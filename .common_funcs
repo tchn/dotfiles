@@ -134,6 +134,15 @@ man() {
 }
 
 urldecode() {
+    set_default;
     local d=${1//+/ };
     echo "${d//\%/\x}";
+}
+
+zipp() {
+    set_default;
+    local passwd;
+    echo -n "Passwd: ";
+    read -s passwd;
+    zip -P "$passwd" "$@";
 }
