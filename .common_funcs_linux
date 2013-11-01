@@ -74,9 +74,9 @@ capdump() {
 run_ap() {
     set_default;
     local ssid psk in_inf;
-    ssid=$1
-    in_inf=$2
     if [ ! -f ~/.hostapd.conf ]; then
+        ssid="$1";
+        in_inf="$2";
         echo -n "Input PSK: ";
         while read -s psk; do break; done
     cat > ~/.hostapd.conf <<EOF
@@ -93,7 +93,6 @@ wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 EOF
     fi;
-
     chmod 0600 ~/.hostapd.conf;
     sudo hostapd ~/.hostapd.conf;
 }
