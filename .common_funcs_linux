@@ -71,7 +71,7 @@ capdump() {
     dumpcap -i "${interface}" -w "${out_filename}" -f "ether host not ${my_ether_addr}" -P;
 }
 
-run_wifimaster() {
+run_ap() {
     set_default;
     local ssid psk in_inf;
     ssid=$1
