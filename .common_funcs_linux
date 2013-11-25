@@ -80,6 +80,7 @@ run_ap() {
         echo -n "Input PSK: ";
         while read -s psk; do break; done
     cat > ~/.hostapd.conf <<EOF
+ctrl_interface=/var/run/hostapd
 interface=$in_inf
 driver=nl80211
 ssid=$ssid
