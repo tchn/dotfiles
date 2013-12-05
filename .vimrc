@@ -275,3 +275,6 @@ Bundle 'Python-mode-klen'
 
 "verilog
 Bundle 'verilog_systemverilog.vim'
+
+"repeat.vim
+Bundle 'repeat.vim'
