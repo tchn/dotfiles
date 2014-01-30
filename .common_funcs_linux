@@ -97,3 +97,13 @@ EOF
     chmod 0600 ~/.hostapd.conf;
     sudo hostapd ~/.hostapd.conf;
 }
+
+add_private_route() {
+    set_default;
+    gw=$1
+	for ip in 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+	do
+		echo "# sudo ip route add ${ip} via ${gw}"
+		sudo ip route add ${ip} via ${gw}
+	done
+}
