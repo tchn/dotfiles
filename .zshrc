@@ -91,9 +91,10 @@ source ~/.common_funcs
 
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
-alias fgrep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
 alias cp='cp -v'
 alias mv='mv -v'
+alias l='ls -al --color=auto'
 
 if islinux; then
     export PATH=/usr/local/sbin:/opt/bin:/opt/sbin:$PATH
