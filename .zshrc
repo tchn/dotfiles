@@ -95,6 +95,7 @@ alias fgrep='fgrep --color=auto'
 alias cp='cp -v'
 alias mv='mv -v'
 alias l='ls -al --color=auto'
+alias lst='ls -altr --color=auto'
 
 if islinux; then
     export PATH=/usr/local/sbin:/opt/bin:/opt/sbin:$PATH
