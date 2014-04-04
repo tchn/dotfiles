@@ -146,3 +146,8 @@ zipp() {
     read -s passwd;
     zip -P "$passwd" "$@";
 }
+
+hig() {
+    set_default;
+    egrep "$@" $HISTFILE;
+}
