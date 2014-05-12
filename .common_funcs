@@ -151,3 +151,9 @@ hig() {
     set_default;
     egrep "$@" $HISTFILE;
 }
+
+
+psf() {
+    set_default;
+    ps auwxf;
+}
