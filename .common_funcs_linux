@@ -107,3 +107,14 @@ add_private_route() {
 		sudo ip route add ${ip} via ${gw}
 	done
 }
+
+lscap() {
+    set_default;
+    for i in /proc/[0-9]*/status; do
+        p=${${i##/proc/}%%/status};
+        CAP=$(grep CapPrm "$i" | grep -v -v ffffff | grep -v 0000000000000);
+        if [[ ! -z "$CAP" ]]; then
+            grep Name "$i"; echo "PID: ${p} - ${CAP}";
+        fi;
+    done;
+}
