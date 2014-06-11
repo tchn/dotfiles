@@ -125,3 +125,5 @@ PATH=$PATH:$HOME/.rvm/bin
 
 #
 #m=modprobe;t=thinkpad_acpi;$m -r $t;$m $t fan_control=1;echo level disengaged >/proc/acpi/ibm/fan
+
+#export GTK_IM_MODULE_FILE=/etc/gtk-2.0/gtk.immodules
