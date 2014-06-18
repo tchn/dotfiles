@@ -155,5 +155,6 @@ hig() {
 
 psf() {
     set_default;
-    ps auwxf;
+    #ps auwxf;
+    ps -ejLf
 }
