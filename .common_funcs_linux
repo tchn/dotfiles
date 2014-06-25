@@ -42,7 +42,7 @@ wifiscan() {
 ccscope() {
     set_default;
     local project_dir="$1";
-    if [ ! -d "$project_dir" ]; then echo "project dir needs to be given"; fi;
+    if [[ ! -d "$project_dir" ]]; then echo "project dir needs to be given"; fi;
     local cscope_file="${project_dir}/cscope.files";
     find "$project_dir" -name "*.c" -o -name "*.h" -o -name "*.cpp" | tee "${cscope_file}";
     pushd "$project_dir";
@@ -74,7 +74,7 @@ capdump() {
 run_ap() {
     set_default;
     local ssid psk in_inf;
-    if [ ! -f ~/.hostapd.conf ]; then
+    if [[ ! -f ~/.hostapd.conf ]]; then
         ssid="$1";
         in_inf="$2";
         echo -n "Input PSK: ";
