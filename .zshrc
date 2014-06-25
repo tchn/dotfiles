@@ -81,7 +81,7 @@ fi
 
 if isdarwin; then
     export FPATH="$FPATH:/opt/local/share/zsh/site-functions/"
-    if [ -f /opt/local/etc/profile.d/autojump.sh ]; then
+    if [[ -f /opt/local/etc/profile.d/autojump.sh ]]; then
         source /opt/local/etc/profile.d/autojump.sh && AUTOJUMP_KEEP_SYMLINKS=1
     fi
 fi
@@ -118,7 +118,7 @@ fi
 PATH=$PATH:$HOME/.rvm/bin
 
 ## source chruby if installed
-[ -f /usr/local/share/chruby/chruby.sh ] && source /usr/local/share/chruby/chruby.sh
+[[ -f /usr/local/share/chruby/chruby.sh ]] && source /usr/local/share/chruby/chruby.sh
 
 # set coredump file to be created
 # ulimit -c unlimited
