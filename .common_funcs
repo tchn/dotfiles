@@ -92,7 +92,8 @@ seqhex() {
     start=$((0x$1));
     end=$((0x$2));
 
-    for i in $(seq "$start" "$end"); do
+    for i in {"$start".."$end"}; do
+    #for i in $(seq "$start" "$end"); do
         printf "%x\n" "$i";
     done;
 }
