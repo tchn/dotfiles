@@ -278,3 +278,11 @@ Bundle 'verilog_systemverilog.vim'
 
 "repeat.vim
 Bundle 'repeat.vim'
+
+"SrcExpl
+Bundle 'wesleyche/SrcExpl'
+nmap <F8> :SrcExplToggle<CR>
+let g:SrcExpl_jumpKey = "<ENTER>"
+let g:SrcExpl_gobackKey = "<SPACE>"
+let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
+let g:SrcExpl_pluginList = ["_minibufexpl_", "_NERD_tree_", "_Tagbar_"]
