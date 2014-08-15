@@ -118,3 +118,83 @@ lscap() {
         fi;
     done;
 }
+
+dhcpsrv() {
+    set_default;
+    local intf; # network interface
+    local srv_ip; # listen-address of dnsmasq
+    local range_start # dhcp-range start IP
+    local range_end # dhcp-range end IP
+    local conf # conf file to save;
+    local tftp_root # tftp root directory
+    local netmask #netmask num
+
+    while getopts ":dhi:I:s:e:o:t:" opt
+    do 
+        case "$opt" in
+            d)
+                set -x;
+                ;;
+            h)
+                echo "Usage example: $0 [ -d ] -i eth1 -I 10.1.1.254 -s 10 -e 30 -o dnsmasq.conf [ -t tftp_root ]";
+                return;
+                ;;
+            i)
+                intf=$OPTARG;
+                ;;
+            I)
+                srv_ip=$OPTARG;
+                ;;
+            s)
+                range_start=$OPTARG;
+                ;;
+            e)
+                range_end=$OPTARG;
+                ;;
+            o)
+                if [ -f $OPTARG ];
+                then
+                    echo "${OPTARG} already exists!";
+                    return 1;
+                else
+                    conf=$OPTARG;
+                fi
+                ;;
+            t)
+                tftp_root=$OPTARG;
+                ;;
+
+        esac
+    done
+
+    cat > "$conf" <<EOF
+log-facility=-
+no-hosts
+interface=$intf
+no-poll
+bind-interfaces
+except-interface=lo
+listen-address=$srv_ip
+dhcp-range=$range_start,$range_end
+dhcp-option=option:router,$srv_ip
+dhcp-lease-max=40
+pid-file=/var/run/dnsmasq-${intf}.pid
+EOF
+
+    if [[ ! -z "$tftp_root" ]];
+    then
+        cat >> "$conf" <<EOF
+enable-tftp
+tftp-root=$tftp_root,$intf
+tftp-secure
+tftp-lowercase
+tftp-max=20
+EOF
+    fi
+
+    netmask=$(ipcalc -nb "$srv_ip" | egrep -i netmask | awk '{print $4}');
+    sudo ip link set "$intf" down;
+    sudo ip link set "$intf" up;
+    sudo ip addr add "${srv_ip}/${netmask}" dev "$intf";
+    sudo dnsmasq -C "$conf" -k
+}
