@@ -136,7 +136,7 @@ dhcpsrv() {
                 set -x;
                 ;;
             h)
-                echo "Usage example: $0 [ -d ] -i eth1 -I 10.1.1.254 -s 10 -e 30 -o dnsmasq.conf [ -t tftp_root ]";
+                echo "Usage example: $0 [ -d ] -i eth1 -I 10.1.1.254 -s 10.1.1.10 -e 10.1.1.30 -o dnsmasq.conf [ -t tftp_root ]";
                 return;
                 ;;
             i)
