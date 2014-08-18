@@ -6,7 +6,7 @@ isdarwin(){
 }
 
 islinux(){
-    [[ $OSTYPE == linux-gnu ]] && return 0
+    [[ $OSTYPE == linux-gnu* ]] && return 0
     return 1
 }
 
