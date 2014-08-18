@@ -136,7 +136,7 @@ dhcpsrv() {
                 set -x;
                 ;;
             h)
-                echo "Usage example: $0 [ -d ] -i eth1 -I 10.1.1.254 -s 10.1.1.10 -e 10.1.1.30 -o dnsmasq.conf [ -t tftp_root ]";
+                printf "%s\n" "Usage: $0 [ -d ] -i eth1 -I 10.1.1.254 -s 10.1.1.10 -e 10.1.1.30 -o dnsmasq.conf [ -t tftp_root ]";
                 return;
                 ;;
             i)
@@ -197,4 +197,98 @@ EOF
     sudo ip link set "$intf" up;
     sudo ip addr add "${srv_ip}/${netmask}" dev "$intf";
     sudo dnsmasq -C "$conf" -k
+}
+
+smbsrv() {
+    set_default;
+    local intf;
+    local path2share;
+    local path2rwshare;
+    local conf;
+
+    while getopts ":dhi:o:s:w:" opt;
+    do
+        case "$opt" in
+            d)
+                set -x;
+                ;;
+
+            h)
+                printf "%s\n" "Usage: ${0} [ -d ] -i eth0 -o smb.conf -s path/to/share [ -w /path/to/rwshare ]";
+                return 0;
+                ;;
+
+            i)
+                intf=$OPTARG;
+                ;;
+
+            o)
+                if [ -f $OPTARG ]; then
+                    printf "%s\n" "${OPTARG} already exists!";
+                    return 1;
+                else
+                    conf=$OPTARG;
+                fi
+                ;;
+
+            s)
+                if [ -d $OPTARG ]; then
+                    path2share=$OPTARG;
+                else
+                    return 1;
+                fi
+                ;;
+
+            w)
+                if [ -d $OPTARG ]; then
+                    path2rwshare=$OPTARG;
+                else
+                    return 1;
+                fi
+                ;;
+        esac
+
+    done;
+
+    cat > "$conf" << EOF
+[global]
+workgroup = WORKGROUP
+server string = smbsrv
+disable netbios = yes
+dns proxy = no
+interfaces = 127.0.0.1 $intf
+log file = /var/log/samba/log.%m
+max log size = 1000
+guest ok = no
+read only = yes
+map to guest = Bad Password
+dos charset = cp932
+min protocol = NT1
+create mask = 0644
+directory mask = 0755
+socket options = SO_KEEPALIVE IPTOS_LOWDELAY TCP_NODELAY
+invalid users = root
+browseable = no
+load printers = no
+usershare allow guest = yes
+usershare owner only = false
+
+[share]
+path = $path2share
+guest ok = yes
+browseable = yes
+EOF
+
+    if [[ ! -z "$path2rwshare" ]]; then
+        cat >> "$conf" << EOF
+
+[rw]
+path = $path2rwshare
+guest ok = yes
+writable = yes
+force user = nobody
+EOF
+    fi
+
+    sudo smbd -F -S -d 2 -s "$conf";
 }
