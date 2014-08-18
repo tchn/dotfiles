@@ -74,12 +74,12 @@ capdump() {
 beap() {
     set_default;
     local ssid psk in_inf;
-    if [[ ! -f ~/hostapd.conf ]]; then
+    if [[ ! -f hostapd.conf ]]; then
         ssid="$1";
         in_inf="$2";
         echo -n "Input PSK: ";
         while read -s psk; do break; done
-    cat > ~/hostapd.conf <<EOF
+    cat > hostapd.conf <<EOF
 ctrl_interface=/var/run/hostapd
 interface=$in_inf
 driver=nl80211
@@ -94,8 +94,8 @@ wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 EOF
     fi;
-    chmod 0600 ~/hostapd.conf;
-    sudo hostapd ~/hostapd.conf;
+    chmod 0600 hostapd.conf;
+    sudo hostapd hostapd.conf;
 }
 
 add_private_route() {
