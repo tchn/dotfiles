@@ -271,7 +271,7 @@ Bundle 'kannokanno/previm'
 let g:previm_open_cmd = 'firefox'
 
 "Python-mode
-Bundle 'Python-mode-klen'
+"Bundle 'Python-mode-klen'
 
 "verilog
 Bundle 'verilog_systemverilog.vim'
