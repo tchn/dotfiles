@@ -290,5 +290,7 @@ force user = nobody
 EOF
     fi
 
-    sudo smbd -F -S -d 2 -s "$conf";
+    printf "%s\n" "Start smbd .. Press Ctrl-C to kill";
+    sudo smbd -F -S -d 2 -s "$conf" &;
+    trap "sudo kill $!" SIGINT;
 }
