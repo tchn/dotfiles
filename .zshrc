@@ -96,6 +96,7 @@ alias cp='cp -v'
 alias mv='mv -v'
 alias l='ls -al --color=auto'
 alias lst='ls -altr --color=auto'
+if [ $(which pygmentize) 2>/dev/null ]; then alias cats='pygmentize -g'; fi;
 
 if islinux; then
     export PATH=/usr/local/sbin:/opt/bin:/opt/sbin:$PATH
