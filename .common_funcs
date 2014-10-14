@@ -83,7 +83,7 @@ printp() {
 
 psgrep() {
     set_default;
-    ps auxf | grep -v "grep" | grep -i "$@";
+    ps auxf | grep -v "grep" | grep -i --color=auto "$@";
 }
 
 seqhex() {
