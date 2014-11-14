@@ -294,3 +294,9 @@ EOF
     sudo smbd -F -S -d 2 -s "$conf" &;
     trap "sudo kill $!" SIGINT;
 }
+
+ipa() {
+    set_default;
+    local interface="$1";
+    ip a s "$interface" | awk -F'[/ ]+' '/inet[^6]/{print $3}'
+}
