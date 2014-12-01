@@ -96,12 +96,16 @@ alias cp='cp -v'
 alias mv='mv -v'
 alias l='ls -al --color=auto'
 alias lr='ls -altr --color=auto'
+alias strings='strings -a'
 if [ $(which pygmentize) 2>/dev/null ]; then alias cats='pygmentize -g'; fi;
 
 if islinux; then
     export PATH=/usr/local/sbin:/opt/bin:/opt/sbin:$PATH
     export PYTHONSTARTUP=~/.pythonstartup
     source ~/.common_funcs_linux
+    if [ -f $HOME/.Xmodmap ]; then
+        /usr/bin/xmodmap $HOME/.Xmodmap;
+    fi
     alias rm='rm -I -v'
     alias ls='ls --color=auto'
     whichsh && . ~/.common_funcs_zsh    # unless sh is the current shell, import .common_funcs_zsh

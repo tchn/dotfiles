@@ -20,6 +20,7 @@ ln -s dotfiles/.pythonstartup .pythonstartup
 ln -s dotfiles/.vim/ .vim
 ln -s dotfiles/.gdbinit .gdbinit
 ln -s dotfiles/.tmux.conf .tmux.conf
+ln -s dotfiles/.Xmodmap .Xmodmap
 
 vimdir="${basedir}/.vim/"
 colorsdir="${vimdir}/colors/"
