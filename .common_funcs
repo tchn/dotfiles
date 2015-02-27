@@ -105,7 +105,7 @@ rep() {
 
 fname() {
     set_default;
-    find . -mindepth 1 -iname "$@";
+    find "$1" -mindepth 1 -regex ".*${@:2}.*";
 }
 
 whichsh(){
