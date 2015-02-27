@@ -97,6 +97,7 @@ alias mv='mv -v'
 alias l='ls -al --color=auto'
 alias lr='ls -altr --color=auto'
 alias strings='strings -a'
+alias dir='dir --color=auto'
 if [ $(which pygmentize) 2>/dev/null ]; then alias cats='pygmentize -g'; fi;
 
 if islinux; then
