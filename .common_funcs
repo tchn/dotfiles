@@ -159,3 +159,7 @@ psf() {
     #ps auwxf;
     ps -ejLf
 }
+
+find_docs() {
+    find "$1" "$@" -regex ".*\(doc\|xls\|ppt\|pdf\txt\)x?$"
+}
