@@ -287,3 +287,6 @@ let g:SrcExpl_jumpKey = "<ENTER>"
 let g:SrcExpl_gobackKey = "<SPACE>"
 let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 let g:SrcExpl_pluginList = ["_minibufexpl_", "_NERD_tree_", "_Tagbar_"]
+
+"ag.vim
+Bundle 'rking/ag.vim'
