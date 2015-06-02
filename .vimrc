@@ -132,6 +132,7 @@ set foldlevel=0
 set clipboard+=unnamed
 set background=dark
 set statusline=2
+set lcs=tab:>- list
 
 " Navigations using keys up/down/left/right
 " Disabling default keys to leaen the hjkl
