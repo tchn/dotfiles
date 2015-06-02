@@ -161,5 +161,5 @@ psf() {
 }
 
 find_docs() {
-    find "$1" "$@" -regex ".*\(doc\|xls\|ppt\|pdf\txt\)x?$"
+    find "$1" "$@" -regex ".*\.\(doc\|xls\|ppt\|pdf\txt\)x?$"
 }
