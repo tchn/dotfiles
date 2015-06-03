@@ -291,3 +291,6 @@ let g:SrcExpl_pluginList = ["_minibufexpl_", "_NERD_tree_", "_Tagbar_"]
 
 "ag.vim
 Bundle 'rking/ag.vim'
+
+"sleuth.vim
+Bundle 'tpope/vim-sleuth'
