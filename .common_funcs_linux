@@ -52,7 +52,8 @@ ccscope() {
 
 randstr() {
     set_default;
-    strings /dev/urandom | grep -o '[[:print:]]' | head -n 32 | tr -d '\n';
+    local length="$1";
+    strings /dev/urandom | grep -o '[[:alnum:]]' | head -n "$length" | tr -d '\n';
 }
 
 keycode() {
