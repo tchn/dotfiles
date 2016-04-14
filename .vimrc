@@ -276,7 +276,7 @@ let g:previm_open_cmd = 'firefox'
 "Bundle 'Python-mode-klen'
 
 "verilog
-Bundle 'verilog_systemverilog.vim'
+"Bundle 'verilog_systemverilog.vim'
 
 "repeat.vim
 Bundle 'repeat.vim'
@@ -294,3 +294,9 @@ Bundle 'rking/ag.vim'
 
 "sleuth.vim
 Bundle 'tpope/vim-sleuth'
+
+"SQLComplete.vim
+Bundle 'SQLComplete.vim'
+
+"vcscommand.vim
+Bundle 'vcscommand.vim'
