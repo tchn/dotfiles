@@ -129,6 +129,7 @@ dhcpsrv() {
     local conf # conf file to save;
     local tftp_root # tftp root directory
     local netmask #netmask num
+    local answer
 
     while getopts ":dhi:I:s:e:o:t:" opt
     do 
@@ -152,14 +153,23 @@ dhcpsrv() {
             e)
                 range_end=$OPTARG;
                 ;;
-            o)
-                if [ -f $OPTARG ];
-                then
-                    echo "${OPTARG} already exists!";
-                    return 1;
-                else
-                    conf=$OPTARG;
-                fi
+            o) if [ -f $OPTARG ]
+                   then
+                           while true
+                           do
+                                   echo "${OPTARG} already exists. Overwrite? [y/n]"
+                                   read answer
+                                   case "$answer" in
+                                           ([Yy]) echo "Overwriting existing conf and running..."
+                                                   conf=$OPTARG 
+                                                   break ;;
+                                           (*) echo "Quitting..."
+                                                   return 1 ;;
+                                   esac
+                           done
+                   else
+                           conf=$OPTARG 
+                   fi
                 ;;
             t)
                 tftp_root=$OPTARG;
