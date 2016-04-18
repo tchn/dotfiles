@@ -128,10 +128,13 @@ dhcpsrv() {
     local range_end # dhcp-range end IP
     local conf # conf file to save;
     local tftp_root # tftp root directory
+    local tftp_srv
+    local tftpsecure
+    local bootfile
     local netmask #netmask num
     local answer
 
-    while getopts ":dhi:I:s:e:o:t:" opt
+    while getopts ":dhi:I:s:e:o:t:T:b:u" opt
     do 
         case "$opt" in
             d)
@@ -154,22 +157,22 @@ dhcpsrv() {
                 range_end=$OPTARG;
                 ;;
             o) if [ -f $OPTARG ]
-                   then
-                           while true
-                           do
-                                   echo "${OPTARG} already exists. Overwrite? [y/n]"
-                                   read answer
-                                   case "$answer" in
-                                           ([Yy]) echo "Overwriting existing conf and running..."
-                                                   conf=$OPTARG 
-                                                   break ;;
-                                           (*) echo "Quitting..."
-                                                   return 1 ;;
-                                   esac
-                           done
-                   else
-                           conf=$OPTARG 
-                   fi
+               then
+                    while true
+                    do
+                        echo "${OPTARG} already exists. Overwrite? [y/n]"
+                        read answer
+                        case "$answer" in
+                            ([Yy]) echo "Overwriting existing conf and running..."
+                                   conf=$OPTARG 
+                                   break ;;
+                            (*) echo "Quitting..."
+                                return 1 ;;
+                           esac
+                    done
+                else
+                    conf=$OPTARG 
+                fi
                 ;;
             t)
                 tftp_root=$OPTARG;
@@ -197,7 +200,8 @@ EOF
         cat >> "$conf" <<EOF
 enable-tftp
 tftp-root=$tftp_root,$intf
-tftp-secure
+${tftpsecure}
+dhcp-boot=$bootfile,$tftp_srv
 tftp-lowercase
 tftp-max=20
 EOF
