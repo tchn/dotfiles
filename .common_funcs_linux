@@ -141,7 +141,7 @@ dhcpsrv() {
                 set -x;
                 ;;
             h)
-                printf "%s\n" "Usage: $0 [ -d ] -i eth1 -I 10.1.1.254 -s 10.1.1.10 -e 10.1.1.30 -o dnsmasq.conf [ -t tftp_root ]";
+                printf "%s\n" "Usage: $0 [ -d ] -i eth1 -I dnsmasq_listen_ip -s ip_range_start -e ip_start_end -o dnsmasq.conf [ -t tftp_root [ -T tftp_srver_ip ] [ -u ] ]";
                 return;
                 ;;
             i)
@@ -177,7 +177,15 @@ dhcpsrv() {
             t)
                 tftp_root=$OPTARG;
                 ;;
-
+            T)
+                tftp_srv=$OPTARG;
+                ;;
+            b)
+                bootfile=$OPTARG;
+                ;;
+            u)
+                tftpsecure="tftp-secure";
+                ;;
         esac
     done
 
