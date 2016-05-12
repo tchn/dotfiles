@@ -329,3 +329,4 @@ pstat() {
     local cmdname="$1";
     ps -o pid,stat,user,tty,cmd -C "$cmdname";
 }
+
