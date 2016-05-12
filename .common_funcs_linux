@@ -323,3 +323,9 @@ ipa() {
     local interface="$1";
     ip a s "$interface" | awk -F'[/ ]+' '/inet[^6]/{print $3}'
 }
+
+pstat() {
+    set_default;
+    local cmdname="$1";
+    ps -o pid,stat,user,tty,cmd -C "$cmdname";
+}
