@@ -327,6 +327,6 @@ ipa() {
 pstat() {
     set_default;
     local cmdname="$1";
-    ps -o pid,stat,user,tty,cmd -C "$cmdname";
+    ps -o pid,stat,user,tty,cmd,etime -C "$cmdname";
 }
 
