@@ -61,17 +61,6 @@ keycode() {
     xev | grep -A2 --line-buffered '^KeyRelease' | sed -n '/keycode /s/^.*keycode \([0-9]*\).* (.*, \(.*\)).*$/\1 \2/p'
 }
 
-capdump() {
-    set_default;
-    local interface;
-    local my_ether_addr;
-    local out_filename;
-    interface="$1";
-    out_filename=$(echo $(date +%Y%m%d-%s)).pcap;
-    my_ether_addr=$(cat /sys/class/net/${interface}/address)
-    dumpcap -i "${interface}" -w "${out_filename}" -f "ether host not ${my_ether_addr}" -P;
-}
-
 beap() {
     set_default;
     local ssid psk in_inf;
@@ -330,3 +319,27 @@ pstat() {
     ps -o pid,stat,user,tty,cmd,etime -C "$cmdname";
 }
 
+dcap(){
+  local flag duration nic="eth0" extra_filter=() filter="" filter_ether="" filename usage=0 exclude_my_ether=0 OPTIND=1
+  while getopts "b:hi:f:w:x" flag; do
+    case "$flag" in
+      b) duration="$OPTARG";;
+      i) nic="$OPTARG";;
+      f) extra_filter=("${extra_filter[@]}" "$OPTARG");;
+      w) filename="$OPTARG";;
+      h) usage=1;;
+      x) exclude_my_ether=1;;
+    esac
+  done
+  shift $(($OPTIND - 1))
+  if [ "$usage" -ne 0 ]; then
+    printf "Usage: ${FUNCNAME} [OPTIONS]\nOptions:\n -b <duration in seconds>\n -i <interface>\n -f <filter expression>\n -w <output filename>\n -h display usage\n -x exclude named interface ethernet address\n"
+    return 1
+  fi
+
+  if [ "$exclude_my_ether" -ne 0 ]; then
+  filter_ether=$(cat /sys/class/net/${nic}/address)
+  filter="ether host not ${filter_ether}"
+  fi
+  dumpcap -i "${nic}" ${duration:+-bduration:$duration} ${filename:+-w$filename} -P ${filter:+-f "${filter}"} ${extra_filter[@]:+-f "${extra_filter[@]}"}
+}
