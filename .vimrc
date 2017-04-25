@@ -109,6 +109,7 @@ set shiftwidth=4
 set softtabstop=4
 set expandtab
 set tabstop=4
+set autoindent
 
 "------------------------------------------------------------
 "" Mappings {{{1
@@ -247,8 +248,8 @@ Bundle 'TaskList.vim'
 
 " SuperTab
 Bundle 'SuperTab'
-"au Filetype python set omnifunc=pythoncomplete#Complete
-"let g:SuperTabDefaultCompletionType = "context"
+au Filetype python set omnifunc=pythoncomplete#Complete
+let g:SuperTabDefaultCompletionType = "context"
 
 "colorschemes
 " Solarized
@@ -269,8 +270,8 @@ Bundle 'tchn/cscope_maps'
 Bundle 'autoload_cscope.vim'
 
 "previm
-Bundle 'kannokanno/previm'
-let g:previm_open_cmd = 'firefox'
+"Bundle 'kannokanno/previm'
+"let g:previm_open_cmd = 'firefox'
 
 "Python-mode
 "Bundle 'Python-mode-klen'
@@ -300,3 +301,9 @@ Bundle 'SQLComplete.vim'
 
 "vcscommand.vim
 Bundle 'vcscommand.vim'
+
+"Windows PowerShell Syntax Plugin
+Bundle 'PProvost/vim-ps1'
+
+"For markdown preview
+Bundle 'JamshedVesuna/vim-markdown-preview'
