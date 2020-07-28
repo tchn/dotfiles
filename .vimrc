@@ -307,3 +307,6 @@ Bundle 'PProvost/vim-ps1'
 
 "For markdown preview
 Bundle 'JamshedVesuna/vim-markdown-preview'
+
+"For vim-airline
+Bundle 'vim-airline/vim-airline'
